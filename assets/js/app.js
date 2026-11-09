@@ -67,20 +67,21 @@
   /* ---------- Router & page wipe ---------- */
   let cleanups = [];
   const onCleanup = (f) => cleanups.push(f);
-  const PAGES = { home: pageHome, fleet: pageFleet, delivery: pageDelivery, policies: pagePolicies, agreement: pageAgreement, contact: pageContact, checkin: pageCheckin };
+  const PAGES = { home: pageHome, fleet: pageFleet, delivery: pageDelivery, policies: pagePolicies, agreement: pageAgreement, contact: pageContact, checkin: pageCheckin, paid: pagePaid };
   function parse() {
     const h = decodeURIComponent(location.hash.replace(/^#\/?/, "")) || "home";
     let m;
     if ((m = h.match(/^car-([\w-]+)$/)) && carById(m[1])) return ["car", m[1]];
     if ((m = h.match(/^book-([\w-]+)$/)) && carById(m[1])) return ["book", m[1]];
+    if ((m = h.match(/^approve-([0-9a-f-]{36})-([0-9a-f]{32})$/))) return ["approve", m[1], m[2]];
     return [PAGES[h] ? h : "home"];
   }
   let firstRender = true, routing = false;
   function render() {
     cleanups.splice(0).forEach((f) => { try { f(); } catch (e) { /* ignore */ } });
-    const [name, arg] = parse();
+    const [name, arg, arg2] = parse();
     view.innerHTML = "";
-    if (name === "car") pageCar(arg); else if (name === "book") pageBook(arg); else PAGES[name]();
+    if (name === "car") pageCar(arg); else if (name === "book") pageBook(arg); else if (name === "approve") pageApprove(arg, arg2); else PAGES[name]();
     window.scrollTo(0, 0);
     $$("#nav a").forEach((a) => a.toggleAttribute("aria-current", a.getAttribute("href") === "#" + name || (name === "car" || name === "book") && a.getAttribute("href") === "#fleet"));
     $$("#nav a[aria-current]").forEach((a) => a.setAttribute("aria-current", "page"));
@@ -1010,6 +1011,44 @@
         notice(note, "bad", `We couldn't upload that. Check your signal and try again${C.phone ? `, or text the photos to ${esc(C.phoneDisplay)}` : ""}.`);
       }
     });
+  }
+
+  /* ---------- Payment: guest thank-you, owner approval ---------- */
+  function pagePaid() {
+    setTitle("Payment received");
+    view.innerHTML = `<section class="wrap" style="padding-block:clamp(48px,9vw,110px)"><div class="panel done-card" style="max-width:720px;margin:0 auto">
+      <span class="eyebrow">Payment received</span><h1 style="font-size:var(--step-3)">You're all set.</h1>
+      <p class="mute" style="max-width:52ch">Stripe will email your receipt. If you haven't completed both links yet (the trip payment and the deposit hold), finish the other one from the message we sent.</p>
+      <p class="mute" style="max-width:52ch">Next: bring your license to the handoff, and we'll do the 5-minute photo check-in together.</p>
+      <div class="copy-row" style="justify-content:center"><a class="btn primary" href="#checkin">See the check-in</a>${contactButtons(true)}</div></div></section>`;
+  }
+  function pageApprove(id, sig) {
+    setTitle("Approve booking");
+    document.querySelector('meta[name="robots"]') || document.head.insertAdjacentHTML("beforeend", '<meta name="robots" content="noindex">');
+    view.innerHTML = `<section class="wrap page-top"><span class="eyebrow">Owner · approve booking</span><h1>Create payment links</h1></section>
+      <section class="wrap" style="padding-bottom:4rem"><div class="panel" id="apBox" style="max-width:760px"><p class="mute"><span class="spinner" style="display:inline-block;vertical-align:middle;border-color:rgba(255,255,255,.2);border-top-color:var(--ambient)"></span> Creating Stripe links…</p></div></section>`;
+    const box = $("#apBox");
+    if (isPreview || !C.supabaseUrl) { box.innerHTML = `<p class="mute">${previewMsg}</p>`; return; }
+    fetch(C.supabaseUrl + "/functions/v1/approve", { method: "POST", headers: { "Content-Type": "application/json", apikey: C.supabaseKey }, body: JSON.stringify({ id, sig }) })
+      .then((r) => r.json().then((j) => ({ ok: r.ok, j }))).catch(() => ({ ok: false, j: { error: "network" } }))
+      .then(({ ok, j }) => {
+        const head = j.ref ? `<dl class="kv" style="margin-bottom:1rem"><dt>Booking</dt><dd class="gauge">${esc(j.ref)}</dd><dt>Car</dt><dd>${esc(j.car)}</dd><dt>Dates</dt><dd>${esc(fmtDT(new Date(j.start)))} → ${esc(fmtDT(new Date(j.end)))}</dd><dt>Guest</dt><dd>${esc(j.guest)} · ${esc(j.phone)}</dd><dt>Trip total</dt><dd class="gauge">${money(j.total)}</dd><dt>Deposit hold</dt><dd class="gauge">${money(j.deposit)}</dd></dl>` : "";
+        if (!ok) {
+          const msg = { stripe_not_configured: "Stripe isn't connected yet. Add your Stripe secret key in Supabase (Edge Functions → Secrets → STRIPE_SECRET_KEY), then open this link again.", bad_link: "This approval link isn't valid. Use the button in the booking email.", not_found: "That booking wasn't found.", stripe_error: "Stripe returned an error: " + esc(j.message || ""), network: "Couldn't reach the server. Check your connection and reload." }[j.error] || "Something went wrong. Reload to try again.";
+          box.innerHTML = head + `<div class="notice bad">${msg}</div>`; return;
+        }
+        const first = (j.guest || "").split(" ")[0];
+        const text = `Hi ${first}, your ${j.car} for ${fmtDT(new Date(j.start))} is confirmed (ref ${j.ref}).\n\n1) Trip payment, ${money(j.total)}:\n${j.pay_url}\n\n2) Refundable deposit hold, ${money(j.deposit)} (authorized, not charged):\n${j.deposit_url}\n\nLinks work for 24 hours. See you at handoff! - Adams Lux Auto`;
+        const phone = (j.phone || "").replace(/[^0-9+]/g, "");
+        box.innerHTML = head + `<div class="notice ok" style="margin-bottom:1rem">Links created. They expire in 24 hours. Open this page again to make new ones.</div>
+          <div class="line-item"><span class="eyebrow">Trip payment · ${money(j.total)}</span><div class="copy-row"><span class="gauge" style="font-size:.85rem">${esc(j.pay_url)}</span><button class="btn ghost" type="button" data-copy="${esc(j.pay_url)}" style="min-height:34px;padding:0 .8rem">Copy</button></div></div>
+          <div class="line-item"><span class="eyebrow">Deposit hold · ${money(j.deposit)}</span><div class="copy-row"><span class="gauge" style="font-size:.85rem">${esc(j.deposit_url)}</span><button class="btn ghost" type="button" data-copy="${esc(j.deposit_url)}" style="min-height:34px;padding:0 .8rem">Copy</button></div></div>
+          <div class="field" style="margin-top:1rem"><label for="apMsg">Message to text the guest</label><textarea id="apMsg" style="min-height:220px">${esc(text)}</textarea></div>
+          <div class="copy-row" style="margin-top:.8rem"><button class="btn primary" type="button" id="apCopy">Copy message</button>${phone ? `<a class="btn" href="sms:${esc(phone)}">${icon.text}Open texts to ${esc(j.phone)}</a>` : ""}</div>
+          <p class="mute" style="font-size:.85rem;margin-top:1rem">The deposit is a card authorization. Capture or release it in the Stripe dashboard under Payments within 7 days. For longer trips, capture it before day 7 and refund after the trip.</p>`;
+        $$("[data-copy]", box).forEach((b) => b.addEventListener("click", () => copyText(b.dataset.copy, b)));
+        $("#apCopy").addEventListener("click", async (e) => { const t = $("#apMsg").value; try { await navigator.clipboard.writeText(t); e.target.textContent = "Copied"; } catch (err) { $("#apMsg").select(); } });
+      });
   }
 
   /* ---------- Boot ---------- */
