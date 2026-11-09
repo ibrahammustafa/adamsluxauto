@@ -55,8 +55,8 @@
       tagline: "Sport sedan with electric-only commuting and xDrive all-wheel drive.",
       specs: [["Powertrain", "2.0L turbo + electric motor"], ["Drive", "AWD (xDrive)"], ["Gearbox", "8-speed auto"], ["Seats", "5"]],
       highlights: ["Electric mode for quiet city driving", "XtraBoost overboost on demand", "Best value in the fleet"],
-      hero: null,
-      gallery: []
+      hero: img("bmw-1", "45% 60%"),
+      gallery: [img("bmw-1", "45% 60%"), img("bmw-2", "50% 55%"), img("bmw-3", "50% 45%"), img("bmw-4", "50% 50%"), img("bmw-5", "50% 50%"), img("bmw-6", "50% 50%")]
     }
   ];
 
@@ -117,6 +117,51 @@
       "Host pickup in the South Bay is free. Delivery is a flat $120 to any spot below or any Bay Area address, and covers return pickup.",
       "We walk the car with you and take timestamped photos at pickup and return. You're welcome to take your own.",
       "Cars may have GPS / telematics for theft recovery and mileage. See the rental agreement." ] }
+  ];
+
+  // Mirrors the host toolkit's Pre/Post-Trip Vehicle Inspection sheet.
+  window.ALA_INSPECT = {
+    photos: [
+      ["front", "Front"], ["rear", "Rear"], ["driver", "Driver side"], ["passenger", "Passenger side"],
+      ["interior", "Interior & seats"], ["dash", "Dashboard: odometer, fuel/charge, no warning lights"]
+    ],
+    checklist: [
+      ["exterior", "Exterior photos taken: front, rear, both sides"],
+      ["tires", "Wheels and tires: no flats, curb rash noted"],
+      ["glass", "Windshield and windows: chips or cracks noted"],
+      ["lights", "Lights and signals working"],
+      ["interior", "Interior clean, no odors, no smoke"],
+      ["seats", "Seats and floor mats: stains or tears noted"],
+      ["trunk", "Trunk / cargo area empty and clean"],
+      ["keys", "Key and charging cable present"],
+      ["warnings", "No dashboard warning lights on"],
+      ["toll", "Toll tag present and mounted"]
+    ],
+    returnOnly: [
+      ["fuelback", "Fuel / charge returned at the starting level (or refuel prepaid)"],
+      ["items", "Personal items removed from the car"]
+    ],
+    marks: { S: "Scratch", D: "Dent", C: "Chip / crack", X: "Other" }
+  };
+
+  window.ALA_PRECAUTIONS = [
+    { h: "Before pickup", items: [
+      "Bring the physical license you uploaded. The name must match your booking.",
+      "Have your insurance card on your phone. We check it at handoff.",
+      "Arrive on time. Handoffs more than 30 minutes late may be rescheduled." ] },
+    { h: "At check-in", items: [
+      "We walk the car together and you complete the online check-in: six photos, odometer, fuel or charge level, and any existing marks on the damage map.",
+      "Anything not recorded at check-in is treated as new at return, so take your time.",
+      "Point out any warning light or issue before you drive off." ] },
+    { h: "During your trip", items: [
+      "Only drivers on the agreement may drive. No racing, track, off-road, rideshare or delivery work.",
+      "No smoking, vaping or pets. Keep food and drinks covered.",
+      "Lock the car and never leave the key inside. Park in lit, legal spots.",
+      "Accident, damage, theft or a warning light: stop safely, take photos, and call or text us right away." ] },
+    { h: "At return", items: [
+      "Return at the same fuel or charge level unless you prepaid.",
+      "Remove personal items and trash. Sand, pet hair or smoke means a cleaning fee.",
+      "Complete the return check-in with the same six photos and the final odometer. Your deposit is released after the review, within 3 business days." ] }
   ];
 
   window.ALA_FAQ = [

@@ -2,7 +2,7 @@
 (function () {
   "use strict";
   const C = window.ALA_CONFIG, FLEET = window.ALA_FLEET, ADDONS = window.ALA_ADDONS, SPOTS = window.ALA_SPOTS;
-  const POL = window.ALA_POLICIES, FAQ = window.ALA_FAQ, AG = window.ALA_AGREEMENT;
+  const POL = window.ALA_POLICIES, FAQ = window.ALA_FAQ, AG = window.ALA_AGREEMENT, INS = window.ALA_INSPECT, PRE = window.ALA_PRECAUTIONS;
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -30,13 +30,13 @@
 
   /* ---------- Shell: brand, nav, footer ---------- */
   function brandHTML() {
-    return C.logoSrc ? `<img src="${esc(C.logoSrc)}" alt="Adams Lux Auto">` : `<span class="wm">ADAMS<small>LUX AUTO</small></span>`;
+    return (C.logoSrc ? `<img src="${esc(C.logoSrc)}" alt="">` : "") + `<span class="wm">ADAMS<small>LUX AUTO</small></span>`;
   }
   $("#brand").innerHTML = brandHTML();
   const telLink = C.phone ? `tel:${C.phone}` : "", smsLink = C.phone ? `sms:${C.phone}` : "";
   $("#foot").innerHTML = `
     <div><a class="brand" href="#home" style="margin-bottom:.8rem">${brandHTML()}</a><p>Private luxury and AMG rentals across the ${esc(C.serviceArea)}. Owner-operated, delivered to your door.</p></div>
-    <div><h4>Explore</h4><a href="#fleet">Fleet</a><a href="#delivery">Delivery spots</a><a href="#policies">Policies & FAQ</a><a href="#agreement">Sign the rental agreement</a></div>
+    <div><h4>Explore</h4><a href="#fleet">Fleet</a><a href="#delivery">Delivery spots</a><a href="#policies">Policies & FAQ</a><a href="#agreement">Sign the rental agreement</a><a href="#checkin">Pickup & return check-in</a></div>
     <div><h4>Contact</h4>${C.phone ? `<a href="${telLink}">${esc(C.phoneDisplay)}</a>` : ""}<a href="mailto:${esc(C.email)}">${esc(C.email)}</a><a href="#contact">Send a message</a>${C.instagram ? `<a href="${esc(C.instagram)}" target="_blank" rel="noopener">Instagram</a>` : ""}</div>
     <div><h4>Good to know</h4><p>All cars: ${money(C.deposit)} refundable deposit. ${C.includedMilesPerDay} mi/day included. Your own full-coverage insurance required.</p><p style="margin-top:.8rem">© ${new Date().getFullYear()} ${esc(C.business)}</p></div>`;
 
@@ -67,7 +67,7 @@
   /* ---------- Router & page wipe ---------- */
   let cleanups = [];
   const onCleanup = (f) => cleanups.push(f);
-  const PAGES = { home: pageHome, fleet: pageFleet, delivery: pageDelivery, policies: pagePolicies, agreement: pageAgreement, contact: pageContact };
+  const PAGES = { home: pageHome, fleet: pageFleet, delivery: pageDelivery, policies: pagePolicies, agreement: pageAgreement, contact: pageContact, checkin: pageCheckin };
   function parse() {
     const h = decodeURIComponent(location.hash.replace(/^#\/?/, "")) || "home";
     let m;
@@ -187,7 +187,7 @@
 
       <section class="section" style="padding-top:0"><div class="wrap">
         <div class="mosaic rv">
-          ${[["glb-37", "tall"], ["c43-7", "wide"], ["e55-29", ""], ["ps-13", ""], ["glb-28", "wide"], ["eqb-33", ""], ["fob-41", ""], ["e55-1", "wide"]].map(([f, cls]) => `<figure class="${cls}"><img src="assets/img/${f}.webp" alt="" loading="lazy" decoding="async"></figure>`).join("")}
+          ${[["glb-37", "tall"], ["bmw-4", ""], ["c43-7", "wide"], ["e55-29", ""], ["ps-13", ""], ["glb-28", "wide"], ["eqb-33", ""], ["fob-41", ""], ["e55-1", "wide"]].map(([f, cls]) => `<figure class="${cls}"><img src="assets/img/${f}.webp" alt="" loading="lazy" decoding="async"></figure>`).join("")}
         </div>
       </div></section>
 
@@ -316,7 +316,7 @@
         <div class="panel rv"><h3>Highlights</h3><ul class="ticks-list">${car.highlights.map((h) => `<li>${esc(h)}</li>`).join("")}</ul></div>
         <div class="panel rv"><h3>${extraTitle}</h3><ul class="ticks-list">${extraList.map((h) => `<li>${esc(h)}</li>`).join("")}</ul></div>
         <div class="panel rv"><h3>To book</h3><ul class="ticks-list">
-          <li>Driver ${car.minAge}+ with a license held 2+ years</li><li>Photos of your license, front and back</li><li>Proof of full-coverage insurance</li><li>${money(C.deposit)} refundable deposit, released after the trip</li></ul></div>
+          <li>Driver ${car.minAge}+ with a license held 2+ years</li><li>Photos of your license, front and back</li><li>Proof of full-coverage insurance</li><li>${money(C.deposit)} refundable deposit, released after the trip</li><li>A 5-minute photo check-in at pickup and return</li></ul></div>
       </section>
       <section class="wrap" style="padding-bottom:3rem" id="inquiry">
         <div class="panel rv" style="max-width:820px">
@@ -434,10 +434,12 @@
     view.innerHTML = `
       <section class="wrap page-top"><span class="eyebrow">Policies</span><h1>The fine print, in plain English</h1>
         <p class="lede">What every renter agrees to. The signed rental agreement is the final word.</p></section>
-      <section class="wrap" style="padding-bottom:3rem"><div class="pol">${POL.map((p) => `<div class="panel rv"><h3>${esc(p.h)}</h3><ul class="ticks-list">${p.items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>`).join("")}</div></section>
+      <section class="wrap" style="padding-bottom:3rem"><span class="eyebrow">Guest check-in & precautions</span><h2 style="margin:.6rem 0 1rem">Before, during and after your trip</h2>
+        <div class="pol" style="margin-bottom:2.4rem">${PRE.map((p) => `<div class="panel rv"><h3>${esc(p.h)}</h3><ul class="ticks-list">${p.items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>`).join("")}</div>
+        <span class="eyebrow">Rental policies</span><h2 style="margin:.6rem 0 1rem">What every renter agrees to</h2><div class="pol">${POL.map((p) => `<div class="panel rv"><h3>${esc(p.h)}</h3><ul class="ticks-list">${p.items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>`).join("")}</div></section>
       <section class="wrap" style="padding-bottom:4rem"><span class="eyebrow">FAQ</span><h2 style="margin:.6rem 0 1rem">Common questions</h2>
         <div class="faq">${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div>
-        <div class="acts" style="display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2rem"><a class="btn primary" href="#agreement">Read & sign the agreement</a><a class="btn" href="#contact">Ask something else</a></div>
+        <div class="acts" style="display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2rem"><a class="btn primary" href="#agreement">Read & sign the agreement</a><a class="btn" href="#checkin">Pickup & return check-in</a><a class="btn" href="#contact">Ask something else</a></div>
       </section>`;
   }
 
@@ -791,9 +793,10 @@
       };
       const { error } = await sb.from("booking_requests").insert(row);
       if (error) throw error;
+      ss.set("ala_last_ref", ref);
       $("#wiz").innerHTML = `<div class="done-card"><span class="eyebrow">Request sent</span><h2>You're on the list, ${esc(d.first)}.</h2>
         <p class="mute" style="max-width:52ch">We'll confirm the ${esc(st.car.short)} for ${esc(fmtDT(toDate(st.sd, st.st)))} and send a secure payment link to <b>${esc(d.email)}</b>, usually within a couple of hours.</p>
-        <span class="ref">${ref}</span><p class="mute" style="font-size:.85rem">Your booking reference. Mention it if you call or text.</p>
+        <span class="ref">${ref}</span><p class="mute" style="font-size:.85rem;max-width:52ch">Your booking reference. Mention it if you call or text, and use it for the photo check-in at pickup and return.</p>
         <div class="copy-row" style="justify-content:center">${contactButtons(true)}<a class="btn" href="#fleet">Back to the fleet</a></div></div>`;
       $("#wiz").scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
     } catch (err) {
@@ -864,6 +867,147 @@
       } catch (err) {
         btn.disabled = false; btn.textContent = "Try again";
         notice(note, "bad", `We couldn't submit that. Check your connection and try again${C.phone ? `, or text ${esc(C.phoneDisplay)}` : ""}.`);
+      }
+    });
+  }
+
+  /* ---------- Pickup / return check-in (vehicle inspection) ---------- */
+  function carMapSVG() {
+    // original top-down outline: body, cabin, glass lines, wheels, mirrors
+    return `<svg viewBox="0 0 220 380" role="img" aria-label="Top-down car outline. Tap to mark damage.">
+      <text x="110" y="14" text-anchor="middle" class="lbl">FRONT</text><text x="110" y="376" text-anchor="middle" class="lbl">REAR</text>
+      <text x="10" y="194" class="lbl" transform="rotate(-90 10 194)" text-anchor="middle">DRIVER</text><text x="210" y="194" class="lbl" transform="rotate(90 210 194)" text-anchor="middle">PASSENGER</text>
+      <rect x="40" y="24" width="140" height="332" rx="44" class="body"/>
+      <rect x="60" y="118" width="100" height="148" rx="22" class="cabin"/>
+      <path d="M60 150 Q110 134 160 150" class="glass"/><path d="M60 240 Q110 254 160 240" class="glass"/>
+      <path d="M58 56 Q110 40 162 56" class="glass"/><path d="M58 326 Q110 342 162 326" class="glass"/>
+      <rect x="28" y="70" width="14" height="46" rx="4" class="wheel"/><rect x="178" y="70" width="14" height="46" rx="4" class="wheel"/>
+      <rect x="28" y="262" width="14" height="46" rx="4" class="wheel"/><rect x="178" y="262" width="14" height="46" rx="4" class="wheel"/>
+      <rect x="24" y="140" width="16" height="9" rx="3" class="mirror"/><rect x="180" y="140" width="16" height="9" rx="3" class="mirror"/>
+      <g id="pins"></g></svg>`;
+  }
+  function pageCheckin() {
+    setTitle("Check-in");
+    const st = { phase: "pickup", files: {}, marks: [], markType: "S", sig: "", sigName: "", initials: {}, agree: false };
+    const now = new Date();
+    view.innerHTML = `
+      <section class="wrap page-top"><span class="eyebrow">Pickup & return check-in</span><h1>Vehicle inspection</h1>
+        <p class="lede">Do this with the owner at handoff, on your phone. Six photos, the odometer, fuel or charge level, and any existing marks. It protects you as much as us: anything recorded here isn't charged to you.</p></section>
+      <section class="wrap book" style="padding-bottom:4rem">
+        <div class="panel" id="ciWrap"><form class="form" id="ciForm" novalidate>
+          <input class="hp" id="ci-hp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="tabs" role="tablist" aria-label="Check-in type">
+            <button type="button" role="tab" data-ph="pickup" aria-selected="true">Pickup</button>
+            <button type="button" role="tab" data-ph="return" aria-selected="false">Return</button></div>
+          <div class="grid2">${field("ci-trip", "Booking reference / trip ID", inp("ci-trip", "text", 'placeholder="e.g. ALA-4F2K9X" autocapitalize="characters"'), "On your confirmation. Ask the owner if you booked by phone.")}
+            ${field("ci-car", "Car", `<select id="ci-car"><option value="">Select</option>${FLEET.map((c) => `<option value="${c.id}">${c.year} ${esc(c.make)} ${esc(c.model)}</option>`).join("")}</select>`)}</div>
+          <div class="grid2">${field("ci-name", "Driver name", inp("ci-name", "text", 'autocomplete="name"'))}${field("ci-phone", "Mobile phone", inp("ci-phone", "tel", 'autocomplete="tel"'))}</div>
+          <div class="grid2">${field("ci-odo", "Odometer (miles)", inp("ci-odo", "text", 'inputmode="numeric" placeholder="e.g. 36852"'))}
+            <div class="field" data-f="ci-fuel"><label for="ci-fuel">Fuel / charge level: <b class="gauge" id="ci-fuelv">100%</b></label><input id="ci-fuel" type="range" min="0" max="100" step="5" value="100" style="accent-color:var(--ambient)"><span class="err" hidden></span></div></div>
+          <p class="notice" style="margin:0">Check-in time is recorded automatically: <b class="gauge">${esc(fmtDT(now))}</b></p>
+
+          <h2 style="font-size:var(--step-1);margin-top:.6rem">Photos</h2>
+          <p class="mute" style="margin-top:-.6rem">Stand back so the whole side fits in frame. Daylight or a lit spot.</p>
+          <div class="grid2">${INS.photos.map(([k, l]) => dropHTML("ci-p-" + k, l, "Tap to take a photo")).join("")}</div>
+
+          <h2 style="font-size:var(--step-1);margin-top:.6rem">Damage map</h2>
+          <p class="mute" style="margin-top:-.6rem">Pick a type, then tap the car where the mark is. Add a note for each one. No marks? Leave it empty.</p>
+          <div class="dmg">
+            <div class="dmg-map" id="dmgMap">${carMapSVG()}</div>
+            <div class="dmg-side">
+              <div class="filters" role="group" aria-label="Mark type">${Object.entries(INS.marks).map(([k, v], i) => `<button type="button" data-mt="${k}" aria-pressed="${i === 0}"><b>${k}</b> ${esc(v)}</button>`).join("")}</div>
+              <ol class="dmg-list" id="dmgList"></ol>
+              <p class="mute" id="dmgEmpty" style="font-size:.88rem">No marks recorded.</p>
+              ${dropHTML("ci-p-damage", "Close-up of damage", "Optional: one close-up of the worst mark")}
+            </div>
+          </div>
+
+          <h2 style="font-size:var(--step-1);margin-top:.6rem">Checklist</h2>
+          <div class="choices" id="ciChecks"></div>
+          ${field("ci-notes", "Notes", `<textarea id="ci-notes" placeholder="Anything else: smells, sounds, items in the car, low tire pressure…"></textarea>`)}
+
+          <h2 style="font-size:var(--step-1);margin-top:.6rem">Confirm</h2>
+          ${field("ci-signame", "Type your full name", inp("ci-signame", "text", 'autocomplete="name"'))}
+          <div class="field" data-f="ci-sig"><span class="legend">Sign</span><div class="sigpad"><canvas id="ci-sig" aria-label="Signature pad"></canvas><span class="base"></span><span class="ph">Sign above the line</span><button class="clear" type="button" id="ci-sigclear">Clear</button></div><span class="err" hidden></span></div>
+          <div class="field" data-f="ci-agree"><label class="check"><input type="checkbox" id="ci-agree"><span id="ci-agreetxt"></span></label><span class="err" hidden></span></div>
+          <div class="wiz-nav" style="justify-content:flex-start"><button class="btn primary" type="submit" id="ciSubmit">Submit check-in</button></div>
+          <div id="ci-note" hidden></div>
+        </form></div>
+        <aside class="summary ci-aside"><div class="panel">
+          <span class="eyebrow">Precautions</span>
+          ${PRE.map((p) => `<div><h3 style="font-size:.98rem;margin-bottom:.4rem">${esc(p.h)}</h3><ul class="ticks-list" style="font-size:.88rem">${p.items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>`).join("")}
+          <div class="copy-row">${contactButtons(true)}</div>
+        </div></aside>
+      </section>`;
+    const f = $("#ciForm");
+    INS.photos.forEach(([k]) => bindDrop(view, "ci-p-" + k, st.files)); bindDrop(view, "ci-p-damage", st.files);
+    const fuel = $("#ci-fuel"); fuel.addEventListener("input", () => ($("#ci-fuelv").textContent = fuel.value + "%"));
+    const pad = sigPad($("#ci-sig"), (d) => (st.sig = d)); $("#ci-sigclear").addEventListener("click", () => pad.clear());
+    $("#ci-signame").addEventListener("input", (e) => (st.sigName = e.target.value));
+    $("#ci-agree").addEventListener("change", (e) => (st.agree = e.target.checked));
+    const prefill = (ss.get("ala_last_ref") || ""); if (prefill) $("#ci-trip").value = prefill;
+    function renderChecks() {
+      const items = INS.checklist.concat(st.phase === "return" ? INS.returnOnly : []);
+      $("#ciChecks").innerHTML = items.map(([k, l]) => `<label class="choice"><input type="checkbox" data-ck="${k}"><span class="t"><b>${esc(l)}</b></span><span></span></label>`).join("");
+      $("#ci-agreetxt").textContent = st.phase === "pickup"
+        ? "I inspected the car with the owner. The photos, odometer, fuel/charge level and damage map above are accurate, and any damage not recorded here may be treated as new at return."
+        : "I'm returning the car. The photos, odometer and fuel/charge level above are accurate as of now.";
+      $("#ciSubmit").textContent = st.phase === "pickup" ? "Submit pickup check-in" : "Submit return check-in";
+    }
+    $$(".tabs [data-ph]", f).forEach((b) => b.addEventListener("click", () => {
+      st.phase = b.dataset.ph; $$(".tabs [data-ph]", f).forEach((x) => x.setAttribute("aria-selected", String(x === b))); renderChecks();
+    }));
+    renderChecks();
+    // damage map
+    $$("[data-mt]", f).forEach((b) => b.addEventListener("click", () => { st.markType = b.dataset.mt; $$("[data-mt]", f).forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
+    const svg = $("#dmgMap svg");
+    function drawMarks() {
+      $("#pins").innerHTML = st.marks.map((m, i) => `<g class="pin"><circle cx="${m.x}" cy="${m.y}" r="11"/><text x="${m.x}" y="${m.y + 4}" text-anchor="middle">${i + 1}</text></g>`).join("");
+      $("#dmgEmpty").hidden = st.marks.length > 0;
+      $("#dmgList").innerHTML = st.marks.map((m, i) => `<li><span class="gauge">${i + 1} · ${m.type}</span><input type="text" data-mn="${i}" maxlength="120" placeholder="${esc(INS.marks[m.type])}: where, how big" value="${esc(m.note)}"><button type="button" class="btn ghost" data-mr="${i}" aria-label="Remove mark ${i + 1}">✕</button></li>`).join("");
+      $$("[data-mn]", f).forEach((el) => el.addEventListener("input", () => (st.marks[+el.dataset.mn].note = el.value)));
+      $$("[data-mr]", f).forEach((el) => el.addEventListener("click", () => { st.marks.splice(+el.dataset.mr, 1); drawMarks(); }));
+    }
+    svg.addEventListener("click", (e) => {
+      if (st.marks.length >= 30) return;
+      const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+      st.marks.push({ type: st.markType, x: Math.round(p.x), y: Math.round(p.y), note: "" }); drawMarks();
+      const last = $(`[data-mn="${st.marks.length - 1}"]`, f); last && last.focus({ preventScroll: true });
+    });
+    drawMarks();
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const v = (k) => ($("#ci-" + k)?.value || "").trim(); let ok = true; const bad = [];
+      const req = (id, cond, msg) => { setErr(f, id, cond ? "" : msg); if (!cond) { ok = false; bad.push(id); } };
+      const car = carById(v("car")); const odo = parseInt(v("odo").replace(/[^0-9]/g, ""), 10);
+      req("ci-trip", v("trip").length >= 3, "Enter your booking reference."); req("ci-car", car, "Select the car.");
+      req("ci-name", v("name").split(/\s+/).length >= 2, "Enter your full name."); req("ci-phone", validPhone(v("phone")), "Enter a mobile number.");
+      req("ci-odo", odo > 0 && odo < 999999, "Enter the odometer reading.");
+      INS.photos.forEach(([k, l]) => req("ci-p-" + k, st.files["ci-p-" + k], `Add the ${l.split(":")[0].toLowerCase()} photo.`));
+      const norm = (s) => s.toLowerCase().replace(/[^a-z]/g, "");
+      req("ci-signame", st.sigName.trim().split(/\s+/).length >= 2 && norm(st.sigName) === norm(v("name")), "Type the same name as above.");
+      req("ci-sig", st.sig, "Sign in the box."); req("ci-agree", st.agree, "Check the box to confirm.");
+      if (!ok) { const el = f.querySelector(`[data-f="${bad[0]}"]`); el && el.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" }); return; }
+      if ($("#ci-hp").value) return;
+      const note = $("#ci-note"), btn = $("#ciSubmit");
+      if (isPreview) { notice(note, "", previewMsg); return; }
+      if (!sb) { notice(note, "bad", `Check-in is offline right now. Text the photos to ${esc(C.phoneDisplay || C.email)}.`); return; }
+      const checklist = {}; $$("[data-ck]", f).forEach((c) => (checklist[c.dataset.ck] = c.checked));
+      btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Uploading photos';
+      const id = uuid(), ref = makeRef();
+      try {
+        const map = {}; INS.photos.forEach(([k]) => (map[k] = "ci-p-" + k)); map.damage_closeup = "ci-p-damage";
+        const photos = await uploadDocs("inspections", id, st.files, map);
+        const { error } = await sb.from("inspections").insert({ id, ref, trip_id: v("trip").toUpperCase(), phase: st.phase, car_id: car.id, guest_name: v("name"), guest_phone: v("phone"),
+          odometer: odo, fuel_pct: +fuel.value, checklist, damage: st.marks, photos, notes: v("notes") || null, signature_name: st.sigName, signature_png: st.sig, user_agent: navigator.userAgent.slice(0, 380) });
+        if (error) throw error;
+        $("#ciWrap").innerHTML = `<div class="done-card"><span class="eyebrow">${st.phase === "pickup" ? "Checked in" : "Returned"}</span>
+          <h2>${st.phase === "pickup" ? `Enjoy the ${esc(car.short)}, ${esc(v("name").split(" ")[0])}.` : `Thanks, ${esc(v("name").split(" ")[0])}. Check-in received.`}</h2>
+          <p class="mute" style="max-width:52ch">${st.phase === "pickup" ? `Odometer ${odo.toLocaleString()} mi, ${fuel.value}% ${car.fuel === "ev" ? "charge" : "fuel"}, ${st.marks.length} existing mark${st.marks.length === 1 ? "" : "s"} recorded. Call or text anytime during your trip.` : `Final odometer ${odo.toLocaleString()} mi. We'll review the photos and release your deposit within 3 business days.`}</p>
+          <span class="ref">${ref}</span><div class="copy-row" style="justify-content:center">${contactButtons(true)}</div></div>`;
+      } catch (err) {
+        btn.disabled = false; btn.textContent = "Try again";
+        notice(note, "bad", `We couldn't upload that. Check your signal and try again${C.phone ? `, or text the photos to ${esc(C.phoneDisplay)}` : ""}.`);
       }
     });
   }

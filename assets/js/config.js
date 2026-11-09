@@ -8,7 +8,7 @@ window.ALA_CONFIG = {
   serviceArea: "San Francisco Bay Area",
   hours: "Handoffs 7am–10pm daily. After-hours by arrangement.",
   instagram: "",        // e.g. "https://instagram.com/adamsluxauto"
-  logoSrc: "",          // e.g. "assets/img/logo.png" once the logo is added
+  logoSrc: "assets/img/logo.png",
 
   deposit: 1000,
   deliveryFee: 120,     // flat, any listed or custom Bay Area address; covers drop-off and return pickup
