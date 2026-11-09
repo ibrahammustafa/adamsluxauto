@@ -1,0 +1,30 @@
+/* Adams Lux Auto — private vehicle rental agreement and liability waiver.
+   Template only: have a California attorney review before relying on it. Bump
+   ALA_CONFIG.agreementVersion whenever this text changes. */
+window.ALA_AGREEMENT = {
+  title: "Private Vehicle Rental Agreement & Liability Waiver",
+  intro: "This agreement is between Adams Lux Auto (\"Owner\") and the person signing below (\"Renter\") for the rental of the vehicle and dates listed in the booking. By signing, Renter agrees to every term below.",
+  sections: [
+    { h: "1. Eligibility and authorized drivers", p: "Renter confirms they are at least the minimum age listed for the vehicle, hold a valid driver's license, and have not had a license suspension, DUI or reckless-driving conviction in the last 5 years. Only Renter and drivers named and approved in writing by Owner may drive the vehicle." },
+    { h: "2. Insurance", p: "Renter must carry personal auto insurance with comprehensive and collision coverage that applies to rented or borrowed vehicles, and that insurance is primary for any loss during the rental. Renter will provide proof on request and authorizes Owner to verify coverage. Renter understands this is a private rental and is not covered by any peer-to-peer platform or rental-counter protection plan.", initial: "insurance" },
+    { h: "3. Responsibility for damage and loss", p: "Renter is responsible for all damage to, theft of, or loss of the vehicle and its keys, accessories and equipment from handoff until the vehicle is returned and inspected, regardless of fault. This includes repair costs, diminished value, towing, storage, and loss of use at the daily rate while the vehicle is out of service, plus reasonable administrative costs.", initial: "damage" },
+    { h: "4. Security deposit", p: "Renter authorizes a $1,000 refundable security deposit. Owner may apply it to tolls, fuel, mileage overage, cleaning, tickets, late fees, damage or any amount owed under this agreement. Amounts above the deposit remain Renter's responsibility. The balance is released within 3 business days after the post-trip inspection.", initial: "deposit" },
+    { h: "5. Use of the vehicle", p: "Renter will not use the vehicle for racing, speed contests, track or autocross events, drifting, burnouts, off-road driving, towing, rideshare or delivery work, carrying passengers for hire, any illegal purpose, or while impaired by alcohol, cannabis or drugs. Renter will not smoke or vape in the vehicle, allow pets without approval, or take the vehicle outside California without written approval. Any of these voids Owner's permission to use the vehicle.", initial: "use" },
+    { h: "6. Mileage, fuel, charging and tolls", p: "The daily mileage allowance is listed in the booking. Miles above the allowance are billed at the posted overage rate. Renter returns the vehicle at the same fuel or charge level unless prepaid. Tolls, express-lane charges and parking fees incurred during the rental are billed to Renter, with a processing fee unless prepaid tolls were purchased." },
+    { h: "7. Tickets, citations and impounds", p: "Renter is responsible for all parking, traffic and camera citations, towing and impound fees incurred during the rental, plus a $25 administrative fee per item. Owner may transfer liability for citations to Renter by providing Renter's information to the issuing agency." },
+    { h: "8. Accidents, theft and breakdowns", p: "Renter will report any accident, damage, theft or warning light to Owner immediately, and to police where required, take photos, and exchange information with other parties. Renter will not authorize repairs without Owner's approval." },
+    { h: "9. Pickup, return and late fees", p: "Both parties will inspect and photograph the vehicle at pickup and return. Late returns beyond a 30-minute grace period are billed at $50 per hour up to one day's rate. A vehicle not returned within 24 hours of the scheduled time without contact may be reported stolen." },
+    { h: "10. GPS and vehicle telematics", p: "The vehicle may be equipped with GPS, telematics or manufacturer connected services. Owner may use location and vehicle data only to recover a stolen or overdue vehicle, verify mileage and condition, and respond to an emergency or law-enforcement request." },
+    { h: "11. Assumption of risk and release", p: "Renter understands that driving involves risk of injury, death and property damage, and voluntarily assumes those risks. To the fullest extent permitted by law, Renter releases Owner from claims for personal injury or property loss arising from Renter's use of the vehicle, except those caused by Owner's gross negligence or willful misconduct.", initial: "release" },
+    { h: "12. Indemnification", p: "Renter will defend, indemnify and hold Owner harmless from claims, damages, fines and costs, including reasonable attorney fees, arising from Renter's or any driver's use of the vehicle or breach of this agreement." },
+    { h: "13. Personal information", p: "Renter's license photos, insurance documents and signature are stored privately and used only to verify identity and eligibility, administer this rental, and respond to claims, citations or legal requests. They are not sold or shared for marketing." },
+    { h: "14. General", p: "This agreement is governed by California law. If any part is unenforceable, the rest remains in effect. Electronic signatures are binding. This agreement, the booking details and any written approvals are the entire agreement between the parties." }
+  ],
+  initials: {
+    insurance: "My own insurance is primary for this rental.",
+    damage: "I'm responsible for damage, theft and loss of use.",
+    deposit: "I authorize the $1,000 refundable deposit.",
+    use: "No racing, track, off-road, rideshare, smoking or impaired driving.",
+    release: "I've read and accept the release and assumption of risk."
+  }
+};

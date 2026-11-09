@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adams Lux Auto</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Private luxury and AMG car rentals in the San Francisco Bay Area. Delivery to SFO, SJC, OAK and Bay Area hotspots.">
+<meta name="theme-color" content="#08070b">
+<meta property="og:title" content="Adams Lux Auto">
+<meta property="og:description" content="Private luxury and AMG car rentals in the Bay Area. AMG E55, C43, GLB 35, Polestar 2, EQB and more.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Manrope:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2308070b'/%3E%3Cpath d='M14 46 32 14l18 32' fill='none' stroke='%23b45cff' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M22 36h20' stroke='%23eeecf2' stroke-width='4'/%3E%3C/svg%3E">
+</head>
+<body>
+<div id="intro" aria-hidden="true">
+  <div class="half top"></div><div class="half bot"></div>
+  <div class="beam"></div>
+  <div class="mark">
+    <div class="word" id="introWord"></div>
+    <div class="sub">Private luxury rentals · Bay Area</div>
+  </div>
+  <button class="skip" type="button" id="introSkip">Skip</button>
+</div>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="#home" id="brand" aria-label="Adams Lux Auto home"></a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#fleet">Fleet</a>
+      <a href="#delivery">Delivery</a>
+      <a href="#policies">Policies</a>
+      <a href="#agreement">Rental agreement</a>
+      <a href="#contact">Contact</a>
+      <a class="btn primary" href="#fleet">Book a car</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="view" tabindex="-1"></main>
+
+<footer class="site-foot">
+  <div class="wrap" id="foot"></div>
+</footer>
+
+<div id="wipe" aria-hidden="true"><div class="panel a"></div><div class="panel b"></div></div>
+<div id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="arrow x" type="button" data-lb="close" aria-label="Close">✕</button>
+  <button class="arrow prev" type="button" data-lb="prev" aria-label="Previous photo">‹</button>
+  <img alt="">
+  <button class="arrow next" type="button" data-lb="next" aria-label="Next photo">›</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/agreement.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
