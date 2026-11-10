@@ -4,14 +4,13 @@
 
   window.ALA_FLEET = [
     {
-      id: "e55", year: 2005, make: "Mercedes-Benz", model: "E55 AMG", short: "E55",
-      tag: "Built & tuned", price: 500, drive: "RWD", type: "Sedan", fuel: "gas", minAge: 25,
-      tagline: "Supercharged V8 legend. Built motor, full bolt-ons, proper tune.",
-      specs: [["Engine", "5.4L supercharged V8"], ["Drive", "Rear-wheel"], ["Gearbox", "5-speed auto"], ["Seats", "5"]],
-      mods: ["Built motor", "Full bolt-ons", "Custom tune", "Long-tube headers", "X-pipe", "C63 mufflers"],
-      highlights: ["The sound alone sells it: X-pipe and C63 mufflers", "Driver-focused AMG interior", "Collector-grade W211 kept clean"],
-      hero: img("e55-39", "50% 62%"),
-      gallery: [img("e55-39", "50% 62%"), img("e55-25", "40% 60%"), img("e55-1", "50% 55%"), img("e55-21", "60% 55%"), img("e55-29", "50% 50%"), img("e55-35", "50% 45%"), img("duo-30", "50% 58%")]
+      id: "glb35", year: 2025, make: "Mercedes-AMG", model: "GLB 35 4MATIC", short: "GLB 35",
+      tag: "AMG SUV", price: 220, drive: "AWD", type: "SUV", fuel: "gas", minAge: 21,
+      tagline: "AMG power in a roomy SUV. Light-up AMG sills and Affalterbach puddle lamps.",
+      specs: [["Engine", "2.0L turbo I4"], ["Drive", "AWD (4MATIC)"], ["Gearbox", "8-speed auto"], ["Body", "Compact SUV"]],
+      highlights: ["AMG Performance wheel with drive-mode dials", "Illuminated AMG door sills and projector lamps", "Space for luggage and the crew"],
+      hero: img("glb-26", "45% 62%"),
+      gallery: [img("glb-26", "45% 62%"), img("glb-37", "60% 62%"), img("glb-31", "45% 40%"), img("glb-27", "50% 55%"), img("glb-38", "50% 50%"), img("glb-36", "50% 50%"), img("glb-23", "50% 50%"), img("glb-24", "50% 50%"), img("glb-28", "50% 50%"), img("glb-20", "50% 50%"), img("fob-41", "50% 50%")]
     },
     {
       id: "c43", year: 2026, make: "Mercedes-AMG", model: "C 43 AMG 4MATIC", short: "C43",
@@ -32,15 +31,6 @@
       gallery: [img("ps-18", "50% 70%"), img("ps-19", "45% 55%"), img("ps-17", "40% 62%"), img("ps-15", "50% 55%"), img("ps-13", "50% 50%"), img("ps-14", "50% 50%")]
     },
     {
-      id: "glb35", year: 2025, make: "Mercedes-AMG", model: "GLB 35 4MATIC", short: "GLB 35",
-      tag: "AMG SUV", price: 220, drive: "AWD", type: "SUV", fuel: "gas", minAge: 21,
-      tagline: "AMG power in a roomy SUV. Light-up AMG sills and Affalterbach puddle lamps.",
-      specs: [["Engine", "2.0L turbo I4"], ["Drive", "AWD (4MATIC)"], ["Gearbox", "8-speed auto"], ["Body", "Compact SUV"]],
-      highlights: ["AMG Performance wheel with drive-mode dials", "Illuminated AMG door sills and projector lamps", "Space for luggage and the crew"],
-      hero: img("glb-26", "45% 62%"),
-      gallery: [img("glb-26", "45% 62%"), img("glb-37", "60% 62%"), img("glb-31", "45% 40%"), img("glb-27", "50% 55%"), img("glb-38", "50% 50%"), img("glb-36", "50% 50%"), img("glb-23", "50% 50%"), img("glb-24", "50% 50%"), img("glb-28", "50% 50%"), img("glb-20", "50% 50%"), img("fob-41", "50% 50%")]
-    },
-    {
       id: "eqb300", year: 2024, make: "Mercedes-Benz", model: "EQB 300 4MATIC", short: "EQB 300",
       tag: "Electric SUV", price: 220, drive: "AWD", type: "SUV", fuel: "ev", minAge: 21,
       tagline: "All-electric Mercedes SUV with the full-width light bar and AMG Line styling.",
@@ -48,6 +38,16 @@
       highlights: ["Full-width front and rear light bars", "Quiet, smooth EV cruising", "Ambient lighting and AMG Line interior"],
       hero: img("eqb-22", "50% 65%"),
       gallery: [img("eqb-22", "50% 65%"), img("eqb-3", "50% 50%"), img("eqb-5", "50% 50%"), img("eqb-33", "50% 50%"), img("eqb-6", "50% 60%"), img("eqb-2", "50% 50%"), img("eqb-32", "50% 50%"), img("eqb-42", "50% 50%")]
+    },
+    {
+      id: "e55", year: 2005, make: "Mercedes-Benz", model: "E55 AMG", short: "E55",
+      tag: "Built & tuned", price: 500, drive: "RWD", type: "Sedan", fuel: "gas", minAge: 25,
+      tagline: "Supercharged V8 legend. Built motor, full bolt-ons, proper tune.",
+      specs: [["Engine", "5.4L supercharged V8"], ["Drive", "Rear-wheel"], ["Gearbox", "5-speed auto"], ["Seats", "5"]],
+      mods: ["Built motor", "Full bolt-ons", "Custom tune", "Long-tube headers", "X-pipe", "C63 mufflers"],
+      highlights: ["The sound alone sells it: X-pipe and C63 mufflers", "Driver-focused AMG interior", "Collector-grade W211 kept clean"],
+      hero: img("e55-39", "50% 62%"),
+      gallery: [img("e55-39", "50% 62%"), img("e55-25", "40% 60%"), img("e55-1", "50% 55%"), img("e55-21", "60% 55%"), img("e55-29", "50% 50%"), img("e55-35", "50% 45%"), img("duo-30", "50% 58%")]
     },
     {
       id: "330e", year: 2022, make: "BMW", model: "330e xDrive", short: "330e",
