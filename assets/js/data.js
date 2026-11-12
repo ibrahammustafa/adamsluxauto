@@ -157,7 +157,7 @@
       "Only drivers on the agreement may drive. No racing, track, off-road, rideshare or delivery work.",
       "No smoking, vaping or pets. Keep food and drinks covered.",
       "Lock the car and never leave the key inside. Park in lit, legal spots.",
-      "Accident, damage, theft or a warning light: stop safely, take photos, and call or text us right away." ] },
+      "Accident, damage, theft or a warning light: stop safely, take photos, and contact us right away using the number given at handoff." ] },
     { h: "At return", items: [
       "Return at the same fuel or charge level unless you prepaid.",
       "Remove personal items and trash. Sand, pet hair or smoke means a cleaning fee.",
@@ -169,7 +169,7 @@
     ["Do you take Turo or rental-company insurance?", "Bookings here are private rentals and aren't covered by Turo or rental-counter protection plans. Your own policy is primary."],
     ["Can I take the car out of state?", "Trips within California are fine. Ask us before booking any trip out of state."],
     ["How do EV charging and the Polestar / EQB work?", "Both arrive charged and come with a charging cable. Public DC fast chargers work with both. Return at the same level or add prepaid recharge."],
-    ["How fast will you reply?", "Usually within a couple of hours during the day. Call or text for anything same-day."],
+    ["How fast will you reply?", "Usually within a couple of hours during the day. For same-day requests, say so in your message."],
     ["Can I see the car before I book?", "Yes. Send an inquiry and we'll set up a quick look or a video walkaround."]
   ];
 })();

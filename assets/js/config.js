@@ -3,8 +3,8 @@
 window.ALA_CONFIG = {
   business: "Adams Lux Auto",
   email: "adam@adamsluxauto.com",
-  phone: "+14083908807",       // leave empty to hide call/text buttons
-  phoneDisplay: "(408) 390-8807",
+  phone: "",       // leave empty to hide call/text buttons
+  phoneDisplay: "",
   serviceArea: "San Francisco Bay Area",
   hours: "Handoffs 7am–10pm daily. After-hours by arrangement.",
   instagram: "",        // e.g. "https://instagram.com/adamsluxauto"

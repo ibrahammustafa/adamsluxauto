@@ -212,7 +212,7 @@
 
       <section class="section" style="padding-top:0"><div class="wrap">
         <div class="cta rv"><span class="eyebrow">Ready when you are</span><h2>Tell us the dates. We'll handle the rest.</h2>
-          <p class="lede">Questions about a car, a long rental or an event? Call or text and you'll talk to the owner directly.</p>
+          <p class="lede">Questions about a car, a long rental or an event? Send a message and you'll hear from the owner directly.</p>
           <div class="acts"><a class="btn primary" href="#fleet">Choose a car</a>${contactButtons(false)}</div></div>
       </div></section>`;
     heroInit(dur);
@@ -449,7 +449,7 @@
     setTitle("Contact");
     view.innerHTML = `
       <section class="wrap page-top"><span class="eyebrow">Contact</span><h1>Talk to the owner</h1>
-        <p class="lede">Call or text for anything same-day. For everything else, send a message and we'll reply by email.</p></section>
+        <p class="lede">Send a message or email and we'll reply quickly, usually within a couple of hours.</p></section>
       <section class="wrap contact-grid">
         <div class="panel rv">
           ${C.phone ? `<div class="line-item"><span class="eyebrow">Call or text</span><div class="copy-row"><span class="gauge">${esc(C.phoneDisplay)}</span><button class="btn ghost" type="button" data-copy="${esc(C.phoneDisplay)}" style="min-height:34px;padding:0 .8rem">Copy</button></div>
@@ -797,7 +797,7 @@
       ss.set("ala_last_ref", ref);
       $("#wiz").innerHTML = `<div class="done-card"><span class="eyebrow">Request sent</span><h2>You're on the list, ${esc(d.first)}.</h2>
         <p class="mute" style="max-width:52ch">We'll confirm the ${esc(st.car.short)} for ${esc(fmtDT(toDate(st.sd, st.st)))} and send a secure payment link to <b>${esc(d.email)}</b>, usually within a couple of hours.</p>
-        <span class="ref">${ref}</span><p class="mute" style="font-size:.85rem;max-width:52ch">Your booking reference. Mention it if you call or text, and use it for the photo check-in at pickup and return.</p>
+        <span class="ref">${ref}</span><p class="mute" style="font-size:.85rem;max-width:52ch">Your booking reference. Mention it when you message us, and use it for the photo check-in at pickup and return.</p>
         <div class="copy-row" style="justify-content:center">${contactButtons(true)}<a class="btn" href="#fleet">Back to the fleet</a></div></div>`;
       $("#wiz").scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
     } catch (err) {
@@ -813,7 +813,7 @@
     const t1 = new Date(); t1.setDate(t1.getDate() + 1);
     view.innerHTML = `
       <section class="wrap page-top"><span class="eyebrow">Rental agreement</span><h1>Sign before your trip</h1>
-        <p class="lede">Booked by phone or text? Every driver signs here and uploads their license and insurance before handoff. Booked on the site? You already signed.</p></section>
+        <p class="lede">Booked outside the site? Every driver signs here and uploads their license and insurance before handoff. Booked on the site? You already signed.</p></section>
       <section class="wrap" style="padding-bottom:4rem"><div class="panel" style="max-width:860px" id="agWrap">
         <form class="form" id="agForm" novalidate>
           <input class="hp" id="ag-hp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -900,7 +900,7 @@
           <div class="tabs" role="tablist" aria-label="Check-in type">
             <button type="button" role="tab" data-ph="pickup" aria-selected="true">Pickup</button>
             <button type="button" role="tab" data-ph="return" aria-selected="false">Return</button></div>
-          <div class="grid2">${field("ci-trip", "Booking reference / trip ID", inp("ci-trip", "text", 'placeholder="e.g. ALA-4F2K9X" autocapitalize="characters"'), "On your confirmation. Ask the owner if you booked by phone.")}
+          <div class="grid2">${field("ci-trip", "Booking reference / trip ID", inp("ci-trip", "text", 'placeholder="e.g. ALA-4F2K9X" autocapitalize="characters"'), "On your confirmation. Ask the owner if you don't have one.")}
             ${field("ci-car", "Car", `<select id="ci-car"><option value="">Select</option>${FLEET.map((c) => `<option value="${c.id}">${c.year} ${esc(c.make)} ${esc(c.model)}</option>`).join("")}</select>`)}</div>
           <div class="grid2">${field("ci-name", "Driver name", inp("ci-name", "text", 'autocomplete="name"'))}${field("ci-phone", "Mobile phone", inp("ci-phone", "tel", 'autocomplete="tel"'))}</div>
           <div class="grid2">${field("ci-odo", "Odometer (miles)", inp("ci-odo", "text", 'inputmode="numeric" placeholder="e.g. 36852"'))}
@@ -992,7 +992,7 @@
       if ($("#ci-hp").value) return;
       const note = $("#ci-note"), btn = $("#ciSubmit");
       if (isPreview) { notice(note, "", previewMsg); return; }
-      if (!sb) { notice(note, "bad", `Check-in is offline right now. Text the photos to ${esc(C.phoneDisplay || C.email)}.`); return; }
+      if (!sb) { notice(note, "bad", `Check-in is offline right now. Send the photos to ${esc(C.email)}.`); return; }
       const checklist = {}; $$("[data-ck]", f).forEach((c) => (checklist[c.dataset.ck] = c.checked));
       btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Uploading photos';
       const id = uuid(), ref = makeRef();
