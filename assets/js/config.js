@@ -2,7 +2,7 @@
    Edit these values to change contact info, fees and backend keys site-wide. */
 window.ALA_CONFIG = {
   business: "Adams Lux Auto",
-  email: "adamsluxauto@gmail.com",
+  email: "adam@adamsluxauto.com",
   phone: "+14083908807",       // leave empty to hide call/text buttons
   phoneDisplay: "(408) 390-8807",
   serviceArea: "San Francisco Bay Area",
