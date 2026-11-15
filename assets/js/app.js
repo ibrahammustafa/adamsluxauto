@@ -357,7 +357,7 @@
 
   const lb = $("#lightbox"); let lbList = [], lbI = 0;
   function openLightbox(list, i) { lbList = list; lbI = i; lbShow(); lb.hidden = false; $(".x", lb).focus(); }
-  function lbShow() { const im = $("img", lb); im.src = lbList[lbI].src; im.alt = ""; im.style.animation = "none"; void im.offsetWidth; im.style.animation = ""; }
+  function lbShow() { const im = $("img", lb); im.src = lbList[lbI].full || lbList[lbI].src; im.alt = ""; im.style.animation = "none"; void im.offsetWidth; im.style.animation = ""; }
   lb.addEventListener("click", (e) => {
     const a = e.target.closest("[data-lb]")?.dataset.lb;
     if (a === "close" || e.target === lb) lb.hidden = true;

@@ -1,6 +1,7 @@
 /* Adams Lux Auto — fleet, add-ons, delivery spots and policies. */
 (function () {
-  const img = (f, pos) => ({ src: "assets/img/" + f + ".webp", pos: pos || "50% 50%" });
+  const img = (f) => ({ src: "assets/img/c/" + f + ".webp", full: "assets/img/" + f + ".webp", pos: "50% 50%" });
+  const hero = (id) => ({ src: "assets/img/h/" + id + ".webp", pos: "50% 50%" });
 
   window.ALA_FLEET = [
     {
@@ -9,8 +10,8 @@
       tagline: "AMG power in a roomy SUV. Light-up AMG sills and Affalterbach puddle lamps.",
       specs: [["Engine", "2.0L turbo I4"], ["Drive", "AWD (4MATIC)"], ["Gearbox", "8-speed auto"], ["Body", "Compact SUV"]],
       highlights: ["AMG Performance wheel with drive-mode dials", "Illuminated AMG door sills and projector lamps", "Space for luggage and the crew"],
-      hero: img("glb-26", "45% 62%"),
-      gallery: [img("glb-26", "45% 62%"), img("glb-37", "60% 62%"), img("glb-31", "45% 40%"), img("glb-27", "50% 55%"), img("glb-38", "50% 50%"), img("glb-36", "50% 50%"), img("glb-23", "50% 50%"), img("glb-24", "50% 50%"), img("glb-28", "50% 50%"), img("glb-20", "50% 50%"), img("fob-41", "50% 50%")]
+      hero: hero("glb35"),
+      gallery: [img("glb-26"), img("glb-37"), img("glb-31"), img("glb-27"), img("glb-38"), img("glb-36"), img("glb-23"), img("glb-24"), img("glb-28"), img("glb-20"), img("fob-41")]
     },
     {
       id: "c43", year: 2026, make: "Mercedes-AMG", model: "C 43 AMG 4MATIC", short: "C43",
@@ -18,8 +19,8 @@
       tagline: "F1-derived electric turbo, 4MATIC grip and a cabin that glows.",
       specs: [["Engine", "2.0L turbo I4, electric turbocharger"], ["Drive", "AWD (4MATIC)"], ["Gearbox", "9-speed MCT"], ["Seats", "5"]],
       highlights: ["Electric exhaust-gas turbo for instant response", "64-color ambient lighting", "AMG sport seats with red belts"],
-      hero: img("c43-9", "40% 60%"),
-      gallery: [img("c43-9", "40% 60%"), img("c43-12", "50% 50%"), img("c43-7", "50% 50%"), img("c43-10", "50% 50%"), img("c43-11", "50% 50%")]
+      hero: hero("c43"),
+      gallery: [img("c43-9"), img("c43-12"), img("c43-7"), img("c43-10"), img("c43-11")]
     },
     {
       id: "polestar2", year: 2024, make: "Polestar", model: "2 Performance", short: "Polestar 2",
@@ -27,8 +28,8 @@
       tagline: "Dual-motor EV with Swedish gold brakes and Google built in.",
       specs: [["Power", "Dual-motor electric"], ["Drive", "AWD"], ["Package", "Performance"], ["Seats", "5"]],
       highlights: ["Gold Brembo calipers and Performance tuning", "Google Maps and Assistant built in", "Silent, instant AWD acceleration"],
-      hero: img("ps-18", "50% 70%"),
-      gallery: [img("ps-18", "50% 70%"), img("ps-19", "45% 55%"), img("ps-17", "40% 62%"), img("ps-15", "50% 55%"), img("ps-13", "50% 50%"), img("ps-14", "50% 50%")]
+      hero: hero("polestar2"),
+      gallery: [img("ps-18"), img("ps-19"), img("ps-17"), img("ps-15"), img("ps-13"), img("ps-14")]
     },
     {
       id: "eqb300", year: 2024, make: "Mercedes-Benz", model: "EQB 300 4MATIC", short: "EQB 300",
@@ -36,8 +37,8 @@
       tagline: "All-electric Mercedes SUV with the full-width light bar and AMG Line styling.",
       specs: [["Power", "Dual-motor electric"], ["Drive", "AWD (4MATIC)"], ["Body", "Compact SUV"], ["Charging", "DC fast charge"]],
       highlights: ["Full-width front and rear light bars", "Quiet, smooth EV cruising", "Ambient lighting and AMG Line interior"],
-      hero: img("eqb-22", "50% 65%"),
-      gallery: [img("eqb-22", "50% 65%"), img("eqb-3", "50% 50%"), img("eqb-5", "50% 50%"), img("eqb-33", "50% 50%"), img("eqb-6", "50% 60%"), img("eqb-2", "50% 50%"), img("eqb-32", "50% 50%"), img("eqb-42", "50% 50%")]
+      hero: hero("eqb300"),
+      gallery: [img("eqb-22"), img("eqb-3"), img("eqb-5"), img("eqb-33"), img("eqb-6"), img("eqb-2"), img("eqb-32"), img("eqb-42")]
     },
     {
       id: "e55", year: 2005, make: "Mercedes-Benz", model: "E55 AMG", short: "E55",
@@ -46,8 +47,8 @@
       specs: [["Engine", "5.4L supercharged V8"], ["Drive", "Rear-wheel"], ["Gearbox", "5-speed auto"], ["Seats", "5"]],
       mods: ["Built motor", "Full bolt-ons", "Custom tune", "Long-tube headers", "X-pipe", "C63 mufflers"],
       highlights: ["The sound alone sells it: X-pipe and C63 mufflers", "Driver-focused AMG interior", "Collector-grade W211 kept clean"],
-      hero: img("e55-39", "50% 62%"),
-      gallery: [img("e55-39", "50% 62%"), img("e55-25", "40% 60%"), img("e55-1", "50% 55%"), img("e55-21", "60% 55%"), img("e55-29", "50% 50%"), img("e55-35", "50% 45%"), img("duo-30", "50% 58%")]
+      hero: hero("e55"),
+      gallery: [img("e55-39"), img("e55-25"), img("e55-1"), img("e55-21"), img("e55-29"), img("e55-35"), img("duo-30")]
     },
     {
       id: "330e", year: 2022, make: "BMW", model: "330e xDrive", short: "330e",
@@ -55,8 +56,8 @@
       tagline: "Sport sedan with electric-only commuting and xDrive all-wheel drive.",
       specs: [["Powertrain", "2.0L turbo + electric motor"], ["Drive", "AWD (xDrive)"], ["Gearbox", "8-speed auto"], ["Seats", "5"]],
       highlights: ["Electric mode for quiet city driving", "XtraBoost overboost on demand", "Best value in the fleet"],
-      hero: img("bmw-1", "45% 60%"),
-      gallery: [img("bmw-1", "45% 60%"), img("bmw-2", "50% 55%"), img("bmw-3", "50% 45%"), img("bmw-4", "50% 50%"), img("bmw-5", "50% 50%"), img("bmw-6", "50% 50%")]
+      hero: hero("330e"),
+      gallery: [img("bmw-new"), img("bmw-1"), img("bmw-2"), img("bmw-3"), img("bmw-4"), img("bmw-5"), img("bmw-6")]
     }
   ];
 
