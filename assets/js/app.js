@@ -77,11 +77,24 @@
     return [PAGES[h] ? h : "home"];
   }
   let firstRender = true, routing = false;
+  /* ---------- Meta Pixel events (no-op if the Pixel isn't loaded) ---------- */
+  function track(ev, params) { try { if (window.fbq) window.fbq("track", ev, params || {}); } catch (e) { /* ignore */ } }
+  let lastTracked = null;
+  function trackPage(name, arg) {
+    const key = location.hash || "#home"; if (key === lastTracked) return;
+    if (lastTracked !== null) track("PageView");
+    lastTracked = key;
+    const car = (name === "car" || name === "book") && typeof carById === "function" ? carById(arg) : null;
+    if (car && name === "car") track("ViewContent", { content_ids: [car.id], content_name: `${car.year} ${car.make} ${car.model}`, content_type: "product", value: car.price, currency: "USD" });
+    if (car && name === "book") track("InitiateCheckout", { content_ids: [car.id], content_type: "product", value: car.price, currency: "USD", num_items: 1 });
+  }
+
   function render() {
     cleanups.splice(0).forEach((f) => { try { f(); } catch (e) { /* ignore */ } });
     const [name, arg, arg2] = parse();
     view.innerHTML = "";
     if (name === "car") pageCar(arg); else if (name === "book") pageBook(arg); else if (name === "approve") pageApprove(arg, arg2); else PAGES[name]();
+    trackPage(name, arg);
     window.scrollTo(0, 0);
     $$("#nav a").forEach((a) => a.toggleAttribute("aria-current", a.getAttribute("href") === "#" + name || (name === "car" || name === "book") && a.getAttribute("href") === "#fleet"));
     $$("#nav a[aria-current]").forEach((a) => a.setAttribute("aria-current", "page"));
@@ -406,7 +419,7 @@
       let saved = false;
       if (sb) { try { const { error } = await sb.from("inquiries").insert(row); saved = !error; } catch (err) { saved = false; } }
       btn.disabled = false; btn.textContent = "Send message";
-      if (saved) { f.reset(); notice(note, "ok", `Message received. We'll reply to <b>${esc(row.email)}</b>${row.phone ? " or text you" : ""}, usually within a couple of hours.`); }
+      if (saved) { track("Contact", { content_name: row.topic }); f.reset(); notice(note, "ok", `Message received. We'll reply to <b>${esc(row.email)}</b>${row.phone ? " or text you" : ""}, usually within a couple of hours.`); }
       else notice(note, "bad", `We couldn't send that from the site. <a href="${esc(mailto)}">Send it by email instead</a>${C.phone ? ` or text ${esc(C.phoneDisplay)}` : ""}.`);
     });
   }
@@ -795,6 +808,7 @@
       const { error } = await sb.from("booking_requests").insert(row);
       if (error) throw error;
       ss.set("ala_last_ref", ref);
+      track("Lead", { content_ids: [st.car.id], content_type: "product", value: q.total, currency: "USD" });
       $("#wiz").innerHTML = `<div class="done-card"><span class="eyebrow">Request sent</span><h2>You're on the list, ${esc(d.first)}.</h2>
         <p class="mute" style="max-width:52ch">We'll confirm the ${esc(st.car.short)} for ${esc(fmtDT(toDate(st.sd, st.st)))} and send a secure payment link to <b>${esc(d.email)}</b>, usually within a couple of hours.</p>
         <span class="ref">${ref}</span><p class="mute" style="font-size:.85rem;max-width:52ch">Your booking reference. Mention it when you message us, and use it for the photo check-in at pickup and return.</p>
