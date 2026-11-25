@@ -10,7 +10,7 @@ window.ALA_CONFIG = {
   instagram: "",        // e.g. "https://instagram.com/adamsluxauto"
   logoSrc: "assets/img/logo.png",
 
-  deposit: 1000,
+  deposit: 500,
   deliveryFee: 120,     // flat, any listed or custom Bay Area address; covers drop-off and return pickup
   includedMilesPerDay: 200,
   overageRate: 0.75,    // $ per mile over the allowance
@@ -21,5 +21,5 @@ window.ALA_CONFIG = {
   supabaseUrl: "https://thhwnmlieshsxkjhyuxb.supabase.co",
   supabaseKey: "sb_publishable_HCj9_NUuWIomidqfH14ZEA_2fL1idH1",
   docsBucket: "guest-docs",
-  agreementVersion: "ALA-RA-2026.11"
+  agreementVersion: "ALA-RA-2026.11.2"
 };

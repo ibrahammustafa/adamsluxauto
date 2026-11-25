@@ -194,7 +194,7 @@
 
       <section class="section"><div class="wrap">
         <div class="section-head rv"><div><span class="eyebrow">The fleet</span><h2>Six cars. One owner who knows every one.</h2>
-          <p class="lede">Every car is personally maintained, detailed before each trip, and handed over by the owner. Same $1,000 refundable deposit across the fleet.</p></div>
+          <p class="lede">Every car is personally maintained, detailed before each trip, and handed over by the owner. Same $500 refundable deposit across the fleet.</p></div>
           <a class="btn" href="#fleet">See all cars ${icon.arrow}</a></div>
         <div class="fleet">${FLEET.map(card).join("")}</div>
       </div></section>
@@ -210,7 +210,7 @@
         <div class="steps">
           ${[["Pick a car & dates", "Choose your car, trip dates, handoff spot and any add-ons. You'll see the full price before you send anything."],
              ["Verify once", "Upload your license and insurance card and sign the rental agreement online. Takes about five minutes."],
-             ["Confirm & deposit", "We confirm availability, usually within a couple of hours, and send a secure link for payment and the $1,000 refundable deposit."],
+             ["Confirm & deposit", "We confirm availability, usually within a couple of hours, and send a secure link for payment and the $500 refundable deposit."],
              ["Meet the car", "Free host pickup in the South Bay, or we deliver to the airport, train, hotel or your door for a flat $120."]]
             .map(([h, p], i) => `<div class="step rv"><span class="n">STEP ${i + 1} / 4</span><h3>${h}</h3><p>${p}</p></div>`).join("")}
         </div>

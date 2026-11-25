@@ -99,7 +99,7 @@
       "Photos of your license (front and back) and proof of full-coverage auto insurance that extends to rental or borrowed vehicles.",
       "Every driver signs the rental agreement before the keys are handed over." ] },
     { h: "Deposit & payment", items: [
-      "A $1,000 refundable security deposit is held for every trip.",
+      "A $500 refundable security deposit is held for every trip.",
       "It's released within 3 business days after the post-trip inspection, minus any tolls, fuel, mileage overage, tickets or damage.",
       "We confirm availability first, then send a secure payment link. Nothing is charged when you submit a request." ] },
     { h: "Mileage, fuel & tolls", items: [
