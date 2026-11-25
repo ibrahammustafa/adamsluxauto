@@ -1030,6 +1030,16 @@
   /* ---------- Payment: guest thank-you, owner approval ---------- */
   function pagePaid() {
     setTitle("Payment received");
+    // Stripe returns here as /?paid=trip&v=<total>&sid=<checkout session>#paid. Report the trip payment to Meta once.
+    try {
+      const q = new URLSearchParams(location.search);
+      if (q.get("paid") === "trip") {
+        const sid = q.get("sid") || "", v = Number(q.get("v")) || 0, key = "ala_px_" + sid;
+        let seen = false; try { seen = !!localStorage.getItem(key); localStorage.setItem(key, "1"); } catch (e) { /* storage blocked */ }
+        if (!seen && window.fbq) window.fbq("track", "Purchase", { value: v, currency: "USD" }, sid ? { eventID: sid } : undefined);
+      }
+      if (q.has("paid")) history.replaceState(null, "", location.pathname + location.hash);
+    } catch (e) { /* ignore */ }
     view.innerHTML = `<section class="wrap" style="padding-block:clamp(48px,9vw,110px)"><div class="panel done-card" style="max-width:720px;margin:0 auto">
       <span class="eyebrow">Payment received</span><h1 style="font-size:var(--step-3)">You're all set.</h1>
       <p class="mute" style="max-width:52ch">Stripe will email your receipt. If you haven't completed both links yet (the trip payment and the deposit hold), finish the other one from the message we sent.</p>
