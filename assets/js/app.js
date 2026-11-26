@@ -275,7 +275,7 @@
     const filters = [["all", "All cars"], ["amg", "AMG"], ["suv", "SUVs"], ["sedan", "Sedans"], ["electric", "Electric & hybrid"]];
     view.innerHTML = `
       <section class="wrap page-top"><span class="eyebrow">The fleet</span><h1>Choose your car</h1>
-        <p class="lede">All prices are per 24-hour day with ${C.includedMilesPerDay} miles included. Every car takes a ${money(C.deposit)} refundable deposit. Book 3+ days for 5% off, 7+ days for 12% off.</p></section>
+        <p class="lede">All prices are per 24-hour day with ${C.includedMilesPerDay} miles included. Every car takes a ${money(C.deposit)} refundable deposit. Book 7+ days for 12% off.</p></section>
       <section class="wrap" style="padding-bottom:4rem">
         <div class="filters" role="group" aria-label="Filter cars" style="margin-bottom:1.2rem">${filters.map(([k, l], i) => `<button type="button" data-k="${k}" aria-pressed="${i === 0}">${l}</button>`).join("")}</div>
         <div class="fleet" id="fleetGrid">${FLEET.map(card).join("")}</div>

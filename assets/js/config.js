@@ -14,7 +14,7 @@ window.ALA_CONFIG = {
   deliveryFee: 120,     // flat, any listed or custom Bay Area address; covers drop-off and return pickup
   includedMilesPerDay: 200,
   overageRate: 0.75,    // $ per mile over the allowance
-  discounts: [ { minDays: 7, pct: 12 }, { minDays: 3, pct: 5 } ], // multi-day discounts, largest first
+  discounts: [ { minDays: 7, pct: 12 } ], // multi-day discounts, largest first
 
   // Supabase (private storage for license photos, signed agreements and booking requests).
   // The publishable/anon key is safe to ship in the browser; row-level security only allows inserts.
