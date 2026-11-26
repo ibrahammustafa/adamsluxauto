@@ -322,6 +322,7 @@
           <div class="acts-col">
             <a class="btn primary" href="#book-${car.id}">Book this car ${icon.arrow}</a>
             <button class="btn" type="button" id="toInquiry">Ask a question</button>
+            <button class="btn ghost" type="button" id="shareCar">Share this car</button>
           </div>
           <div class="copy-row">${contactButtons(true)}</div>
         </aside>
@@ -342,6 +343,11 @@
       <section class="section" style="padding-top:1rem"><div class="wrap">
         <div class="section-head"><div><span class="eyebrow">More from the fleet</span><h2>You might also like</h2></div></div>
         <div class="fleet">${others.map(card).join("")}</div></div></section>`;
+    $("#shareCar").addEventListener("click", async (e) => {
+      const url = location.origin + "/car/" + car.id + "/", btn = e.currentTarget;
+      if (navigator.share) { try { await navigator.share({ title: `${car.year} ${car.short} · Adams Lux Auto`, url }); return; } catch (err) { if (err && err.name === "AbortError") return; } }
+      copyText(url, btn);
+    });
     $("#toInquiry").addEventListener("click", () => { $("#inquiry").scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); setTimeout(() => $("#inq-name").focus({ preventScroll: true }), 500); });
     bindInquiry("inq", car);
     if (g.length) galleryInit(car);
