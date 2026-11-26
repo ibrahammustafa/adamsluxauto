@@ -1068,11 +1068,11 @@
           box.innerHTML = head + `<div class="notice bad">${msg}</div>`; return;
         }
         const first = (j.guest || "").split(" ")[0];
-        const text = `Hi ${first}, your ${j.car} for ${fmtDT(new Date(j.start))} is confirmed (ref ${j.ref}).\n\n1) Trip payment, ${money(j.total)}:\n${j.pay_url}\n\n2) Refundable deposit hold, ${money(j.deposit)} (authorized, not charged):\n${j.deposit_url}\n\nLinks work for 24 hours. See you at handoff! - Adams Lux Auto`;
+        const text = `Hi ${first}, your ${j.car} for ${fmtDT(new Date(j.start))} is confirmed (ref ${j.ref}).\n\n1) Trip payment, ${money(j.total)}:\n${j.pay_url}${j.deposit_url ? `\n\n2) Refundable deposit hold, ${money(j.deposit)} (authorized, not charged):\n${j.deposit_url}` : ""}\n\nLinks work for 24 hours. See you at handoff! - Adams Lux Auto`;
         const phone = (j.phone || "").replace(/[^0-9+]/g, "");
         box.innerHTML = head + `<div class="notice ok" style="margin-bottom:1rem">Links created. They expire in 24 hours. Open this page again to make new ones.</div>
           <div class="line-item"><span class="eyebrow">Trip payment · ${money(j.total)}</span><div class="copy-row"><span class="gauge" style="font-size:.85rem">${esc(j.pay_url)}</span><button class="btn ghost" type="button" data-copy="${esc(j.pay_url)}" style="min-height:34px;padding:0 .8rem">Copy</button></div></div>
-          <div class="line-item"><span class="eyebrow">Deposit hold · ${money(j.deposit)}</span><div class="copy-row"><span class="gauge" style="font-size:.85rem">${esc(j.deposit_url)}</span><button class="btn ghost" type="button" data-copy="${esc(j.deposit_url)}" style="min-height:34px;padding:0 .8rem">Copy</button></div></div>
+${j.deposit_url ? `          <div class="line-item"><span class="eyebrow">Deposit hold · ${money(j.deposit)}</span><div class="copy-row"><span class="gauge" style="font-size:.85rem">${esc(j.deposit_url)}</span><button class="btn ghost" type="button" data-copy="${esc(j.deposit_url)}" style="min-height:34px;padding:0 .8rem">Copy</button></div></div>` : ""}
           <div class="field" style="margin-top:1rem"><label for="apMsg">Message to text the guest</label><textarea id="apMsg" style="min-height:220px">${esc(text)}</textarea></div>
           <div class="copy-row" style="margin-top:.8rem"><button class="btn primary" type="button" id="apCopy">Copy message</button>${phone ? `<a class="btn" href="sms:${esc(phone)}">${icon.text}Open texts to ${esc(j.phone)}</a>` : ""}</div>
           <p class="mute" style="font-size:.85rem;margin-top:1rem">The deposit is a card authorization. Capture or release it in the Stripe dashboard under Payments within 7 days. For longer trips, capture it before day 7 and refund after the trip.</p>`;
