@@ -661,7 +661,7 @@
   function bindDates(st) {
     const upd = () => { st.sd = $("#bk-sd").value; st.st = $("#bk-st").value; st.ed = $("#bk-ed").value; st.et = $("#bk-et").value;
       const q = quote(st); const n = $("#daysNote");
-      n.innerHTML = q.days ? `<b class="gauge">${q.days} day${q.days > 1 ? "s" : ""}</b> · ${C.includedMilesPerDay * q.days} miles included${q.discPct ? ` · <span style="color:var(--go)">${q.discPct}% multi-day discount applied</span>` : ` · Book 3+ days for 5% off`}` : "Pick a return time after pickup."; };
+      n.innerHTML = q.days ? `<b class="gauge">${q.days} day${q.days > 1 ? "s" : ""}</b> · ${C.includedMilesPerDay * q.days} miles included${q.discPct ? ` · <span style="color:var(--go)">${q.discPct}% multi-day discount applied</span>` : ` · Book 7+ days for 12% off`}` : "Pick a return time after pickup."; };
     ["bk-sd", "bk-st", "bk-ed", "bk-et"].forEach((i) => $("#" + i).addEventListener("change", upd)); upd();
   }
   function paneHandoff(st) {
