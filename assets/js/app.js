@@ -355,13 +355,14 @@
 
   function galleryInit(car) {
     const g = car.gallery, stage = $("#stage"), thumbs = $$("#thumbs button"); let i = 0;
+    // One photo frame that always shows exactly the selected photo. All photos are preloaded so switching is instant.
+    g.forEach((p) => { const im = new Image(); im.src = p.src; });
+    $$("img", stage).slice(1).forEach((x) => x.remove());
+    const main = $("img", stage);
     function show(n) {
       i = (n + g.length) % g.length;
-      const prev = $$("img", stage), img = new Image();
-      img.src = g[i].src; img.alt = prev.length ? prev[0].alt : ""; img.style.objectPosition = g[i].pos; img.className = reduce ? "" : "in";
-      // newest photo always goes on top (right before the arrows/counter), then everything older is cleared out
-      stage.insertBefore(img, $(".arrow", stage) || $("#count", stage) || null);
-      setTimeout(() => prev.forEach((x) => x.remove()), reduce ? 0 : 900);
+      main.src = g[i].src; main.style.objectPosition = g[i].pos;
+      if (!reduce) { main.classList.remove("swap"); void main.offsetWidth; main.classList.add("swap"); }
       thumbs.forEach((t, k) => t.setAttribute("aria-current", String(k === i)));
       const c = $("#count"); if (c) c.textContent = `${i + 1} / ${g.length}`;
       if (thumbs[i]) thumbs[i].scrollIntoView({ block: "nearest", inline: "center", behavior: reduce ? "auto" : "smooth" });
