@@ -29,7 +29,7 @@
       specs: [["Power", "Dual-motor electric"], ["Drive", "AWD"], ["Package", "Performance"], ["Seats", "5"]],
       highlights: ["Gold Brembo calipers and Performance tuning", "Google Maps and Assistant built in", "Silent, instant AWD acceleration"],
       hero: hero("polestar2"),
-      gallery: [img("ps-8616"), img("ps-8655"), img("ps-8654"), img("ps-8612"), img("ps-8611"), img("ps-18"), img("ps-19"), img("ps-17"), img("ps-15")]
+      gallery: [img("ps-8616"), img("ps-8655"), img("ps-8654"), img("ps-8612"), img("ps-8611"), img("ps-int1"), img("ps-int2"), img("ps-int3"), img("ps-int4"), img("ps-18"), img("ps-19"), img("ps-17"), img("ps-15")]
     },
     {
       id: "eqb300", year: 2024, make: "Mercedes-Benz", model: "EQB 300 4MATIC", short: "EQB 300",
