@@ -67,13 +67,14 @@
   /* ---------- Router & page wipe ---------- */
   let cleanups = [];
   const onCleanup = (f) => cleanups.push(f);
-  const PAGES = { home: pageHome, fleet: pageFleet, delivery: pageDelivery, policies: pagePolicies, agreement: pageAgreement, contact: pageContact, checkin: pageCheckin, paid: pagePaid };
+  const PAGES = { home: pageHome, fleet: pageFleet, delivery: pageDelivery, policies: pagePolicies, agreement: pageAgreement, contact: pageContact, checkin: pageCheckin, paid: pagePaid, reviews: pageReviews };
   function parse() {
     const h = decodeURIComponent(location.hash.replace(/^#\/?/, "")) || "home";
     let m;
     if ((m = h.match(/^car-([\w-]+)$/)) && carById(m[1])) return ["car", m[1]];
     if ((m = h.match(/^book-([\w-]+)$/)) && carById(m[1])) return ["book", m[1]];
     if ((m = h.match(/^approve-([0-9a-f-]{36})-([0-9a-f]{32})$/))) return ["approve", m[1], m[2]];
+    if ((m = h.match(/^review-([0-9a-f-]{36})-([0-9a-f]{32})-(approve|reject)$/))) return ["revmod", m[1], m[2], m[3]];
     return [PAGES[h] ? h : "home"];
   }
   let firstRender = true, routing = false;
@@ -91,9 +92,9 @@
 
   function render() {
     cleanups.splice(0).forEach((f) => { try { f(); } catch (e) { /* ignore */ } });
-    const [name, arg, arg2] = parse();
+    const [name, arg, arg2, arg3] = parse();
     view.innerHTML = "";
-    if (name === "car") pageCar(arg); else if (name === "book") pageBook(arg); else if (name === "approve") pageApprove(arg, arg2); else PAGES[name]();
+    if (name === "car") pageCar(arg); else if (name === "book") pageBook(arg); else if (name === "approve") pageApprove(arg, arg2); else if (name === "revmod") pageReviewMod(arg, arg2, arg3); else PAGES[name]();
     trackPage(name, arg);
     window.scrollTo(0, 0);
     $$("#nav a").forEach((a) => a.toggleAttribute("aria-current", a.getAttribute("href") === "#" + name || (name === "car" || name === "book") && a.getAttribute("href") === "#fleet"));
@@ -199,6 +200,12 @@
         <div class="fleet">${FLEET.map(card).join("")}</div>
       </div></section>
 
+      <section class="section reviews-band" style="padding-top:0"><div class="wrap">
+        <div class="section-head rv"><div><span class="eyebrow">Guest reviews</span><h2>What renters say</h2><p class="lede" id="revSummary">Reviews from guests who've driven the fleet.</p></div>
+          <a class="btn" href="#reviews">Leave a review ${icon.arrow}</a></div>
+        <div class="rev-strip rv" id="revStrip"><div class="rev-empty">Loading reviews…</div></div>
+      </div></section>
+
       <section class="section" style="padding-top:0"><div class="wrap">
         <div class="mosaic rv">
           ${[["glb-37", "tall"], ["bmw-4", ""], ["c43-7", "wide"], ["ps-15", ""], ["ps-13", ""], ["glb-28", "wide"], ["eqb-33", ""], ["fob-41", ""], ["c43-10", "wide"]].map(([f, cls]) => `<figure class="${cls}"><img src="assets/img/${f}.webp" alt="" loading="lazy" decoding="async"></figure>`).join("")}
@@ -229,6 +236,7 @@
           <div class="acts"><a class="btn primary" href="#fleet">Choose a car</a>${contactButtons(false)}</div></div>
       </div></section>`;
     heroInit(dur);
+    loadReviews().then((list) => paintReviewStrip(list));
   }
 
   function heroInit(dur) {
@@ -1107,6 +1115,109 @@ ${j.deposit_url ? `          <div class="line-item"><span class="eyebrow">Deposi
         $$("[data-copy]", box).forEach((b) => b.addEventListener("click", () => copyText(b.dataset.copy, b)));
         $("#apCopy").addEventListener("click", async (e) => { const t = $("#apMsg").value; try { await navigator.clipboard.writeText(t); e.target.textContent = "Copied"; } catch (err) { $("#apMsg").select(); } });
       });
+  }
+
+  /* ---------- Reviews ---------- */
+  // Guests submit reviews; nothing is public until the owner publishes it from the email link.
+  // Public reads go through the approved_reviews() RPC, which never returns emails.
+  let reviewCache = null;
+  async function loadReviews() {
+    if (reviewCache) return reviewCache;
+    if (!sb) return [];
+    try { const { data, error } = await sb.rpc("approved_reviews"); if (error) return []; reviewCache = data || []; return reviewCache; } catch (e) { return []; }
+  }
+  const starRow = (n) => `<span class="stars" aria-label="${n} out of 5 stars">${"★".repeat(n)}<i>${"★".repeat(5 - n)}</i></span>`;
+  const monthYr = (d) => new Date(d).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  function reviewCard(r) {
+    const car = r.car_id ? carById(r.car_id) : null;
+    return `<figure class="rev-card">${starRow(r.rating)}<blockquote>${esc(r.body)}</blockquote>
+      <figcaption><b>${esc(r.name)}</b><span>${car ? esc(car.short) + " · " : ""}${esc(monthYr(r.created_at))}</span></figcaption></figure>`;
+  }
+  function paintReviewStrip(list) {
+    const strip = $("#revStrip"); if (!strip) return;
+    if (!list.length) {
+      strip.classList.add("empty");
+      strip.innerHTML = `<div class="rev-empty"><span class="stars" aria-hidden="true"><i>★★★★★</i></span><p>No reviews yet. Rented one of our cars? Be the first to share how it went.</p><a class="btn primary" href="#reviews">Write a review</a></div>`;
+      return;
+    }
+    const avg = list.reduce((a, r) => a + r.rating, 0) / list.length;
+    const sum = $("#revSummary"); if (sum) sum.innerHTML = `${starRow(Math.round(avg))} <b class="gauge">${avg.toFixed(1)}</b> from ${list.length} guest review${list.length === 1 ? "" : "s"}.`;
+    // Duplicate the set so the marquee loops seamlessly; the copy is hidden from screen readers.
+    const cards = list.slice(0, 12).map(reviewCard).join("");
+    strip.innerHTML = `<div class="rev-track${list.length < 3 || reduce ? " still" : ""}">${cards}${list.length >= 3 && !reduce ? `<div class="rev-dup" aria-hidden="true">${cards}</div>` : ""}</div>`;
+  }
+  function pageReviews() {
+    setTitle("Reviews");
+    const opts = FLEET.map((c) => `<option value="${esc(c.id)}">${esc(c.year + " " + c.short)}</option>`).join("");
+    view.innerHTML = `<section class="wrap page-top"><span class="eyebrow">Guest reviews</span><h1>Reviews</h1>
+        <p class="lede">Rented with us? Tell other drivers how it went. Reviews are checked before they appear, and only your first name and last initial are shown.</p></section>
+      <section class="wrap rev-page" style="padding-bottom:4rem">
+        <div class="panel rv">
+          <h2 style="margin-top:0">Leave a review</h2>
+          <form class="form" id="rv-form" novalidate>
+            <input class="hp" id="rv-hp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="field" data-f="rv-rating"><label>Your rating</label>
+              <div class="star-pick" role="radiogroup" aria-label="Rating">${[5, 4, 3, 2, 1].map((n) => `<input type="radio" name="rv-rating" id="rv-r${n}" value="${n}"><label for="rv-r${n}" title="${n} star${n > 1 ? "s" : ""}" aria-label="${n} star${n > 1 ? "s" : ""}">★</label>`).join("")}</div>
+              <span class="err" hidden></span></div>
+            <div class="grid2">${field("rv-name", "Your name", inp("rv-name", "text", 'autocomplete="name" maxlength="60"'), "Shown as first name and last initial.")}
+              ${field("rv-car", "Car you rented", `<select id="rv-car"><option value="">Choose a car</option>${opts}</select>`, "Optional.")}</div>
+            ${field("rv-email", "Email", inp("rv-email", "email", 'autocomplete="email" maxlength="120"'), "Optional and never shown. Only used if we need to reach you about your review.")}
+            ${field("rv-body", "Your review", `<textarea id="rv-body" maxlength="800" placeholder="How was the car, the handoff, the trip?"></textarea>`, '<span id="rv-count">0</span> / 800')}
+            <div class="wiz-nav" style="justify-content:flex-start"><button class="btn primary" type="submit">Submit review</button></div>
+            <div id="rv-note" hidden></div>
+          </form>
+        </div>
+        <div><h2 class="rv" style="margin-top:0">What guests said</h2><div class="rev-list" id="revList"><p class="mute">Loading…</p></div></div>
+      </section>`;
+    loadReviews().then((list) => {
+      const box = $("#revList"); if (!box) return;
+      box.innerHTML = list.length ? list.map(reviewCard).join("") : `<p class="mute">No published reviews yet. Yours could be the first.</p>`;
+    });
+    const f = $("#rv-form"), body = $("#rv-body");
+    body.addEventListener("input", () => { $("#rv-count").textContent = body.value.length; });
+    $$('input[name="rv-rating"]', f).forEach((r) => r.addEventListener("change", () => setErr(f, "rv-rating", "")));
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const v = (k) => ($("#rv-" + k)?.value || "").trim();
+      const rating = Number((f.querySelector('input[name="rv-rating"]:checked') || {}).value || 0);
+      let ok = true;
+      [["rv-rating", rating ? "" : "Pick a star rating."], ["rv-name", v("name").length >= 2 ? "" : "Enter your name."],
+       ["rv-email", !v("email") || validEmail(v("email")) ? "" : "Check the email, or leave it blank."], ["rv-body", v("body").length >= 10 ? "" : "Write at least a sentence."]]
+        .forEach(([k, m]) => { setErr(f, k, m); if (m) ok = false; });
+      if (!ok) return;
+      if ($("#rv-hp").value) return;
+      const note = $("#rv-note"), btn = f.querySelector('button[type="submit"]');
+      if (isPreview) { notice(note, "", previewMsg); return; }
+      btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Sending';
+      let saved = false;
+      if (sb) { try { const { error } = await sb.from("reviews").insert({ name: v("name"), email: v("email") || null, car_id: v("car") || null, rating, body: v("body") }); saved = !error; } catch (err) { saved = false; } }
+      btn.disabled = false; btn.textContent = "Submit review";
+      if (saved) { f.reset(); $("#rv-count").textContent = "0"; notice(note, "ok", "Thank you! Your review was sent and will appear here once it's been checked."); }
+      else notice(note, "bad", `We couldn't send that just now. Please try again, or email it to <a href="mailto:${esc(C.email)}">${esc(C.email)}</a>.`);
+    });
+  }
+  function pageReviewMod(id, sig, action) {
+    setTitle("Review");
+    document.querySelector('meta[name="robots"]') || document.head.insertAdjacentHTML("beforeend", '<meta name="robots" content="noindex">');
+    const pub = action === "approve";
+    view.innerHTML = `<section class="wrap page-top"><span class="eyebrow">Owner · guest review</span><h1>${pub ? "Publish this review?" : "Hide this review?"}</h1></section>
+      <section class="wrap" style="padding-bottom:4rem"><div class="panel" id="rmBox" style="max-width:680px"><p class="mute">Loading…</p></div></section>`;
+    const box = $("#rmBox");
+    if (isPreview || !C.supabaseUrl) { box.innerHTML = `<p class="mute">${previewMsg}</p>`; return; }
+    const call = (a) => fetch(C.supabaseUrl + "/functions/v1/review-approve", { method: "POST", headers: { "Content-Type": "application/json", apikey: C.supabaseKey }, body: JSON.stringify({ id, sig, action: a }) })
+      .then((r) => r.json().then((j) => ({ ok: r.ok, j }))).catch(() => ({ ok: false, j: { error: "network" } }));
+    call("view").then(({ ok, j }) => {
+      if (!ok) { box.innerHTML = `<div class="notice bad">${j.error === "invalid link" ? "This link isn't valid. Use the button in the review email." : j.error === "not found" ? "That review no longer exists." : "Couldn't reach the server. Reload to try again."}</div>`; return; }
+      box.innerHTML = `${reviewCard({ name: j.name, rating: j.rating, body: j.body, created_at: new Date() })}
+        <p class="mute" style="margin:1rem 0">Currently <b>${j.approved ? "live on the site" : "not shown on the site"}</b>.</p>
+        <button class="btn ${pub ? "primary" : ""}" type="button" id="rmGo">${pub ? "Publish on site" : "Hide from site"}</button><div id="rmNote" hidden style="margin-top:1rem"></div>`;
+      $("#rmGo").addEventListener("click", async (e) => {
+        e.target.disabled = true;
+        const r = await call(action);
+        if (r.ok) { reviewCache = null; notice($("#rmNote"), "ok", pub ? `Published. <a href="#home">See it on the homepage</a>.` : "Hidden. It won't show on the site."); e.target.hidden = true; }
+        else { e.target.disabled = false; notice($("#rmNote"), "bad", "That didn't work. Try again."); }
+      });
+    });
   }
 
   /* ---------- Boot ---------- */
