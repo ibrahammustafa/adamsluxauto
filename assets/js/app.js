@@ -370,9 +370,19 @@
     const p = $(".arrow.prev", stage), n = $(".arrow.next", stage);
     if (p) p.addEventListener("click", (e) => { e.stopPropagation(); show(i - 1); });
     if (n) n.addEventListener("click", (e) => { e.stopPropagation(); show(i + 1); });
-    let sx = null;
-    stage.addEventListener("pointerdown", (e) => (sx = e.clientX));
-    stage.addEventListener("pointerup", (e) => { if (sx == null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1)); else if (e.target.tagName === "IMG") openLightbox(g, i); });
+    // Swipe: touch events on phones (pointer events get cancelled when the browser starts scrolling), pointer events for mouse.
+    let sx = null, sy = null, swiped = false;
+    stage.addEventListener("touchstart", (e) => { const t = e.touches[0]; sx = t.clientX; sy = t.clientY; swiped = false; }, { passive: true });
+    stage.addEventListener("touchmove", (e) => { if (sx == null) return; const t = e.touches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+      if (!swiped && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) { swiped = true; show(i + (dx < 0 ? 1 : -1)); } }, { passive: true });
+    stage.addEventListener("touchend", () => { sx = null; });
+    let mx = null;
+    stage.addEventListener("pointerdown", (e) => { if (e.pointerType !== "touch") mx = e.clientX; });
+    stage.addEventListener("pointerup", (e) => { if (e.pointerType === "touch" || mx == null) return; const dx = e.clientX - mx; mx = null; if (Math.abs(dx) > 40) { swiped = true; show(i + (dx < 0 ? 1 : -1)); } });
+    stage.addEventListener("pointerdown", () => { swiped = false; });
+    stage.addEventListener("dragstart", (e) => e.preventDefault());
+    // tap / click on the photo opens it full screen (click fires once, after touch or mouse, so no ghost taps)
+    stage.addEventListener("click", (e) => { if (e.target.tagName === "IMG" && !swiped) openLightbox(g, i); });
   }
 
   const lb = $("#lightbox"); let lbList = [], lbI = 0;
