@@ -37,7 +37,7 @@
   $("#foot").innerHTML = `
     <div><a class="brand" href="#home" style="margin-bottom:.8rem">${brandHTML()}</a><p>Private luxury and AMG rentals across the ${esc(C.serviceArea)}. Owner-operated, delivered to your door.</p></div>
     <div><h4>Explore</h4><a href="#fleet">Fleet</a><a href="#delivery">Delivery spots</a><a href="#policies">Policies & FAQ</a><a href="#agreement">Sign the rental agreement</a><a href="#checkin">Pickup & return check-in</a></div>
-    <div><h4>Contact</h4>${C.phone ? `<a href="${telLink}">${esc(C.phoneDisplay)}</a>` : ""}<a href="mailto:${esc(C.email)}">${esc(C.email)}</a><a href="#contact">Send a message</a>${C.instagram ? `<a href="${esc(C.instagram)}" target="_blank" rel="noopener">Instagram</a>` : ""}</div>
+    <div><h4>Contact</h4>${C.phone ? `<a href="${telLink}">${esc(C.phoneDisplay)}</a>` : ""}<a href="mailto:${esc(C.email)}">${esc(C.email)}</a><a href="#contact">Send a message</a><a href="/privacy/">Privacy policy</a>${C.instagram ? `<a href="${esc(C.instagram)}" target="_blank" rel="noopener">Instagram</a>` : ""}</div>
     <div><h4>Good to know</h4><p>All cars: ${money(C.deposit)} refundable deposit. ${C.includedMilesPerDay} mi/day included. Your own full-coverage insurance required.</p><p style="margin-top:.8rem">© ${new Date().getFullYear()} ${esc(C.business)}</p></div>`;
 
   const menuBtn = $("#menuBtn");
