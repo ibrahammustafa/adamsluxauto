@@ -11,7 +11,7 @@
       specs: [["Engine", "2.0L turbo I4"], ["Drive", "AWD (4MATIC)"], ["Gearbox", "8-speed auto"], ["Body", "Compact SUV"]],
       highlights: ["AMG Performance wheel with drive-mode dials", "Illuminated AMG door sills and projector lamps", "Space for luggage and the crew"],
       hero: hero("glb35"),
-      gallery: [img("glb-8464"), img("glb-26"), img("glb-6101"), img("glb-8803"), img("glb-8801"), img("glb-6755"), img("glb-6103"), img("glb-6104"), img("glb-6100"), img("glb-6102"), img("glb-6108"), img("glb-6107"), img("glb-6105"), img("glb-6106"), img("glb-6098"), img("glb-37"), img("glb-31"), img("glb-36"), img("glb-24"), img("fob-41"), img("duo-8354")]
+      gallery: [img("glb-8464"), img("glb-8576"), img("glb-26"), img("glb-6101"), img("glb-8803"), img("glb-8801"), img("glb-6755"), img("glb-6103"), img("glb-6104"), img("glb-6100"), img("glb-6102"), img("glb-6108"), img("glb-6107"), img("glb-6105"), img("glb-6106"), img("glb-6098"), img("glb-37"), img("glb-31"), img("glb-36"), img("glb-24"), img("fob-41"), img("duo-8354")]
     },
     {
       id: "c43", year: 2026, make: "Mercedes-AMG", model: "C 43 AMG 4MATIC", short: "C43",
