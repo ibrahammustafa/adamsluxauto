@@ -130,7 +130,7 @@
     return `<img class="${cls}" src="${esc(g.src)}" alt="${esc(car.year + " " + car.make + " " + car.model)}" style="object-position:${g.pos}" loading="lazy" decoding="async">`;
   }
   function card(car) {
-    return `<a class="car-card rv" href="#car-${car.id}" data-type="${esc(car.type)}" data-fuel="${esc(car.fuel)}" data-amg="${/AMG/.test(car.model) ? 1 : 0}">
+    return `<a class="car-card rv" href="#car-${car.id}" data-type="${esc(car.type)}" data-fuel="${esc(car.fuel)}" data-amg="${/AMG/.test(car.make + " " + car.model) ? 1 : 0}">
       <div class="ph">${photo(car)}<span class="badge">${esc(car.tag)}</span></div>
       <div class="body">
         <span class="yr">${car.year} · ${esc(car.make)}</span>
