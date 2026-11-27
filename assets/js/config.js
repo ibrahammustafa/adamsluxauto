@@ -15,6 +15,8 @@ window.ALA_CONFIG = {
   includedMilesPerDay: 200,
   overageRate: 0.75,    // $ per mile over the allowance
   discounts: [ { minDays: 7, pct: 12 } ], // multi-day discounts, largest first
+  // Promo codes: % off the daily-rate subtotal. Does not stack with the multi-day discount (the bigger one applies).
+  promos: [ { code: "BLACKFRIDAY20", pct: 20, label: "Black Friday", ends: "2026-12-02T08:00:00Z" } ], // ends = Dec 1, 11:59 PM PT
 
   // Supabase (private storage for license photos, signed agreements and booking requests).
   // The publishable/anon key is safe to ship in the browser; row-level security only allows inserts.

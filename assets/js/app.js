@@ -493,15 +493,22 @@
   function tripDays(s, e) { if (!s || !e) return 0; const h = (e - s) / 36e5; if (h <= 0) return 0; return Math.max(1, Math.ceil((h - 0.5) / 24)); }
   const fmtDT = (d) => d ? d.toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "";
   function addonPrice(a, car) { if (a.carPrice && a.carPrice[car.id] != null) return a.carPrice[car.id]; if (a.byFuel) return a.byFuel[car.fuel]; return a.price; }
+  function findPromo(code) {
+    const c = String(code || "").trim().toUpperCase(); if (!c) return null;
+    return (C.promos || []).find((p) => p.code === c && (!p.ends || Date.now() < Date.parse(p.ends))) || null;
+  }
   function quote(st) {
     const car = st.car, days = tripDays(toDate(st.sd, st.st), toDate(st.ed, st.et));
     const base = days * car.price;
     const d = C.discounts.find((x) => days >= x.minDays);
-    const disc = d ? Math.round(base * d.pct) / 100 : 0;
+    const pr = findPromo(st.promo);
+    let pct = d ? d.pct : 0, label = d ? `${d.pct}% multi-day discount` : "", promoCode = null;
+    if (pr && pr.pct > pct) { pct = pr.pct; label = `${pr.code} · ${pr.pct}% off`; promoCode = pr.code; }
+    const disc = pct ? Math.round(base * pct) / 100 : 0;
     const items = ADDONS.filter((a) => st.addons.has(a.id)).map((a) => { const p = addonPrice(a, car); return { id: a.id, name: a.name, amount: a.type === "perDay" ? p * days : p, unit: p, perDay: a.type === "perDay" }; });
     const delivery = st.handoff === "delivery" ? C.deliveryFee : 0;
     const total = base - disc + items.reduce((s, x) => s + x.amount, 0) + delivery;
-    return { days, base, discPct: d ? d.pct : 0, disc, items, delivery, total, deposit: C.deposit };
+    return { days, base, discPct: pct, discLabel: label, promoCode, disc, items, delivery, total, deposit: C.deposit };
   }
 
   /* ---------- Files & signature ---------- */
@@ -611,7 +618,7 @@
     setTitle("Book the " + car.short);
     const t1 = new Date(); t1.setDate(t1.getDate() + 1); const t3 = new Date(); t3.setDate(t3.getDate() + 3);
     const st = { car, step: 0, maxStep: 0, sd: dstr(t1), st: "10:00", ed: dstr(t3), et: "10:00", handoff: "pickup", spot: "sfo", address: "", ret: "same", retAddress: "",
-      addons: new Set(), driver: {}, files: {}, initials: {}, sigName: "", sig: "", agree: false, notes: "" };
+      addons: new Set(), driver: {}, files: {}, initials: {}, sigName: "", sig: "", agree: false, notes: "", promo: (new URLSearchParams(location.search).get("promo") || "").toUpperCase() };
     view.innerHTML = `
       <div class="wrap crumbs"><a href="#fleet">Fleet</a> / <a href="#car-${car.id}">${esc(car.short)}</a> / Book</div>
       <section class="wrap page-top" style="padding-top:1rem"><span class="eyebrow">Booking request</span><h1>Book the ${car.year} ${esc(car.short)}</h1>
@@ -656,13 +663,21 @@
     return `<div class="pane" data-p="0"><div><span class="eyebrow">Step 1 of 6</span><h2>When do you need it?</h2></div>
       <div class="grid2">${field("bk-sd", "Pickup date", inp("bk-sd", "date", `value="${st.sd}" min="${dstr(new Date())}"`))}${field("bk-st", "Pickup time", timeSelect("bk-st", st.st))}</div>
       <div class="grid2">${field("bk-ed", "Return date", inp("bk-ed", "date", `value="${st.ed}" min="${dstr(new Date())}"`))}${field("bk-et", "Return time", timeSelect("bk-et", st.et))}</div>
-      <div class="notice" id="daysNote"></div></div>`;
+      <div class="notice" id="daysNote"></div>
+      ${field("bk-promo", "Promo code (optional)", inp("bk-promo", "text", `value="${esc(st.promo)}" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. BLACKFRIDAY20" style="text-transform:uppercase"`))}
+      <div class="notice" id="promoNote" hidden></div></div>`;
   }
   function bindDates(st) {
     const upd = () => { st.sd = $("#bk-sd").value; st.st = $("#bk-st").value; st.ed = $("#bk-ed").value; st.et = $("#bk-et").value;
       const q = quote(st); const n = $("#daysNote");
-      n.innerHTML = q.days ? `<b class="gauge">${q.days} day${q.days > 1 ? "s" : ""}</b> · ${C.includedMilesPerDay * q.days} miles included${q.discPct ? ` · <span style="color:var(--go)">${q.discPct}% multi-day discount applied</span>` : ` · Book 7+ days for 12% off`}` : "Pick a return time after pickup."; };
+      n.innerHTML = q.days ? `<b class="gauge">${q.days} day${q.days > 1 ? "s" : ""}</b> · ${C.includedMilesPerDay * q.days} miles included${q.discPct ? ` · <span style="color:var(--go)">${esc(q.discLabel)} applied</span>` : ` · Book 7+ days for 12% off`}` : "Pick a return time after pickup."; };
     ["bk-sd", "bk-st", "bk-ed", "bk-et"].forEach((i) => $("#" + i).addEventListener("change", upd)); upd();
+    const pn = $("#promoNote"), pupd = () => { st.promo = $("#bk-promo").value.trim().toUpperCase(); const pr = findPromo(st.promo), q = quote(st);
+      if (!st.promo) { pn.hidden = true; return; } pn.hidden = false;
+      pn.innerHTML = !pr ? `<span style="color:var(--brake)">That code isn't valid or has expired.</span>`
+        : q.promoCode ? `<span style="color:var(--go)">${esc(pr.code)} applied: ${pr.pct}% off the daily rate.</span>`
+        : `${esc(pr.code)} is valid, but your ${q.discPct}% multi-day discount is bigger, so that's applied instead.`; upd(); };
+    $("#bk-promo").addEventListener("input", pupd); pupd();
   }
   function paneHandoff(st) {
     const opts = (sel) => SPOTS.map((s) => `<option value="${s.id}"${s.id === sel ? " selected" : ""}>${esc(s.name)} · ${esc(s.area)}</option>`).join("") + `<option value="custom">Custom address</option>`;
@@ -765,7 +780,7 @@
       ${q.days ? `<p class="mute" style="font-size:.88rem">${fmtDT(toDate(st.sd, st.st))} → ${fmtDT(toDate(st.ed, st.et))}</p>` : ""}
       <div class="lines">
         <div><span>${money(car.price)} × ${q.days || 0} day${q.days === 1 ? "" : "s"}</span><span>${money(q.base)}</span></div>
-        ${q.disc ? `<div class="disc"><span>${q.discPct}% multi-day discount</span><span>−${money(q.disc)}</span></div>` : ""}
+        ${q.disc ? `<div class="disc"><span>${esc(q.discLabel)}</span><span>−${money(q.disc)}</span></div>` : ""}
         ${q.delivery ? `<div><span>Delivery & return pickup</span><span>${money(q.delivery)}</span></div>` : ""}
         ${q.items.map((i) => `<div><span>${esc(i.name)}${i.perDay ? ` <small class="mute">× ${q.days}</small>` : ""}</span><span>${money(i.amount)}</span></div>`).join("")}
         <div class="total"><span>Trip total</span><span>${money(q.total)}</span></div>
@@ -788,6 +803,7 @@
       ${st.xd ? `<div><span>Additional driver</span><span>${esc(st.xd.name)}</span></div>` : ""}
       <div><span>Documents</span><span>License front & back, insurance card${st.files["dr-selfie"] ? ", selfie" : ""}</span></div>
       <div><span>Agreement</span><span>Signed by ${esc(st.sigName)} · ${esc(C.agreementVersion)}</span></div>
+      ${q.promoCode ? `<div><span>Promo code</span><span class="gauge">${esc(q.promoCode)} (−${money(q.disc)})</span></div>` : ""}
       <div><span>Trip total</span><span class="gauge">${money(q.total)} + ${money(q.deposit)} refundable deposit</span></div></div>`;
   }
   async function submitBooking(st) {
