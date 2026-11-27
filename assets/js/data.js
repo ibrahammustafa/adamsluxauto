@@ -11,7 +11,7 @@
       specs: [["Engine", "2.0L turbo I4"], ["Drive", "AWD (4MATIC)"], ["Gearbox", "8-speed auto"], ["Body", "Compact SUV"]],
       highlights: ["AMG Performance wheel with drive-mode dials", "Illuminated AMG door sills and projector lamps", "Space for luggage and the crew"],
       hero: hero("glb35"),
-      gallery: [img("glb-26"), img("glb-37"), img("glb-31"), img("glb-27"), img("glb-38"), img("glb-36"), img("glb-23"), img("glb-24"), img("glb-28"), img("glb-20"), img("fob-41")]
+      gallery: [img("glb-26"), img("glb-8803"), img("glb-8801"), img("glb-37"), img("glb-31"), img("glb-27"), img("glb-38"), img("glb-36"), img("glb-23"), img("glb-24"), img("glb-28"), img("glb-20"), img("fob-41")]
     },
     {
       id: "c43", year: 2026, make: "Mercedes-AMG", model: "C 43 AMG 4MATIC", short: "C43",
@@ -29,7 +29,7 @@
       specs: [["Power", "Dual-motor electric"], ["Drive", "AWD"], ["Package", "Performance"], ["Seats", "5"]],
       highlights: ["Gold Brembo calipers and Performance tuning", "Google Maps and Assistant built in", "Silent, instant AWD acceleration"],
       hero: hero("polestar2"),
-      gallery: [img("ps-18"), img("ps-19"), img("ps-17"), img("ps-15"), img("ps-13"), img("ps-14")]
+      gallery: [img("ps-8616"), img("ps-8655"), img("ps-8654"), img("ps-8612"), img("ps-18"), img("ps-19"), img("ps-17"), img("ps-15")]
     },
     {
       id: "eqb300", year: 2024, make: "Mercedes-Benz", model: "EQB 300 4MATIC", short: "EQB 300",
