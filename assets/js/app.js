@@ -193,7 +193,7 @@
       </section>
 
       <section class="section"><div class="wrap">
-        <div class="section-head rv"><div><span class="eyebrow">The fleet</span><h2>Six cars. One owner who knows every one.</h2>
+        <div class="section-head rv"><div><span class="eyebrow">The fleet</span><h2>Five cars. One owner who knows every one.</h2>
           <p class="lede">Every car is personally maintained, detailed before each trip, and handed over by the owner. Same $500 refundable deposit across the fleet.</p></div>
           <a class="btn" href="#fleet">See all cars ${icon.arrow}</a></div>
         <div class="fleet">${FLEET.map(card).join("")}</div>
