@@ -201,7 +201,7 @@
 
       <section class="section" style="padding-top:0"><div class="wrap">
         <div class="mosaic rv">
-          ${[["glb-37", "tall"], ["bmw-4", ""], ["c43-7", "wide"], ["e55-29", ""], ["ps-13", ""], ["glb-28", "wide"], ["eqb-33", ""], ["fob-41", ""], ["e55-1", "wide"]].map(([f, cls]) => `<figure class="${cls}"><img src="assets/img/${f}.webp" alt="" loading="lazy" decoding="async"></figure>`).join("")}
+          ${[["glb-37", "tall"], ["bmw-4", ""], ["c43-7", "wide"], ["ps-15", ""], ["ps-13", ""], ["glb-28", "wide"], ["eqb-33", ""], ["fob-41", ""], ["c43-10", "wide"]].map(([f, cls]) => `<figure class="${cls}"><img src="assets/img/${f}.webp" alt="" loading="lazy" decoding="async"></figure>`).join("")}
         </div>
       </div></section>
 

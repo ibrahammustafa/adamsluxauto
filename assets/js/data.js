@@ -41,16 +41,6 @@
       gallery: [img("eqb-22"), img("eqb-3"), img("eqb-5"), img("eqb-33"), img("eqb-6"), img("eqb-2"), img("eqb-32"), img("eqb-42")]
     },
     {
-      id: "e55", year: 2005, make: "Mercedes-Benz", model: "E55 AMG", short: "E55",
-      tag: "Built & tuned", price: 500, drive: "RWD", type: "Sedan", fuel: "gas", minAge: 25,
-      tagline: "Supercharged V8 legend. Built motor, full bolt-ons, proper tune.",
-      specs: [["Engine", "5.4L supercharged V8"], ["Drive", "Rear-wheel"], ["Gearbox", "5-speed auto"], ["Seats", "5"]],
-      mods: ["Built motor", "Full bolt-ons", "Custom tune", "Long-tube headers", "X-pipe", "C63 mufflers"],
-      highlights: ["The sound alone sells it: X-pipe and C63 mufflers", "Driver-focused AMG interior", "Collector-grade W211 kept clean"],
-      hero: hero("e55"),
-      gallery: [img("e55-39"), img("e55-25"), img("e55-1"), img("e55-21"), img("e55-29"), img("e55-35"), img("duo-30")]
-    },
-    {
       id: "330e", year: 2022, make: "BMW", model: "330e xDrive", short: "330e",
       tag: "Plug-in hybrid", price: 175, drive: "AWD", type: "Sedan", fuel: "phev", minAge: 21,
       tagline: "Sport sedan with electric-only commuting and xDrive all-wheel drive.",
@@ -64,9 +54,9 @@
   // perDay: charged per rental day. flat: once per trip. byFuel: price depends on the car's fuel type.
   window.ALA_ADDONS = [
     { id: "refuel", name: "Prepaid refuel / recharge", desc: "Return at any fuel or charge level. We top it off.", type: "flat",
-      byFuel: { gas: 85, ev: 45, phev: 60 }, carPrice: { e55: 110 } },
+      byFuel: { gas: 85, ev: 45, phev: 60 } },
     { id: "tolls", name: "Prepaid tolls", desc: "Unlimited Bay Area bridge and express-lane tolls. No FasTrak invoices after your trip.", type: "perDay", price: 12 },
-    { id: "unlimited", name: "Unlimited miles", desc: "Drop the daily mileage cap. Great for road trips.", type: "perDay", price: 60, exclude: ["e55"] },
+    { id: "unlimited", name: "Unlimited miles", desc: "Drop the daily mileage cap. Great for road trips.", type: "perDay", price: 60 },
     { id: "miles100", name: "+100 mile pack", desc: "Extra miles at a lower rate than overage.", type: "flat", price: 50 },
     { id: "driver", name: "Additional driver", desc: "Add a second verified driver to the agreement.", type: "perDay", price: 15 },
     { id: "clean", name: "Prepaid cleaning", desc: "Skip the wash. Return it beach-sandy and we'll handle it (smoking still prohibited).", type: "flat", price: 50 },
@@ -95,7 +85,7 @@
 
   window.ALA_POLICIES = [
     { h: "Who can book", items: [
-      "Drivers 21+ with a valid license held at least 2 years. The C43 and E55 require 25+.",
+      "Drivers 21+ with a valid license held at least 2 years. The C43 requires 25+.",
       "Photos of your license (front and back) and proof of full-coverage auto insurance that extends to rental or borrowed vehicles.",
       "Every driver signs the rental agreement before the keys are handed over." ] },
     { h: "Deposit & payment", items: [
