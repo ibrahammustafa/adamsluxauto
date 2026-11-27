@@ -357,10 +357,11 @@
     const g = car.gallery, stage = $("#stage"), thumbs = $$("#thumbs button"); let i = 0;
     function show(n) {
       i = (n + g.length) % g.length;
-      const old = $("img", stage), img = new Image();
-      img.src = g[i].src; img.alt = old.alt; img.style.objectPosition = g[i].pos; img.className = reduce ? "" : "in";
-      stage.insertBefore(img, old.nextSibling);
-      setTimeout(() => old.remove(), reduce ? 0 : 900);
+      const prev = $$("img", stage), img = new Image();
+      img.src = g[i].src; img.alt = prev.length ? prev[0].alt : ""; img.style.objectPosition = g[i].pos; img.className = reduce ? "" : "in";
+      // newest photo always goes on top (right before the arrows/counter), then everything older is cleared out
+      stage.insertBefore(img, $(".arrow", stage) || $("#count", stage) || null);
+      setTimeout(() => prev.forEach((x) => x.remove()), reduce ? 0 : 900);
       thumbs.forEach((t, k) => t.setAttribute("aria-current", String(k === i)));
       const c = $("#count"); if (c) c.textContent = `${i + 1} / ${g.length}`;
       if (thumbs[i]) thumbs[i].scrollIntoView({ block: "nearest", inline: "center", behavior: reduce ? "auto" : "smooth" });
