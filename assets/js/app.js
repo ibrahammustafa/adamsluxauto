@@ -69,7 +69,10 @@
   const onCleanup = (f) => cleanups.push(f);
   const PAGES = { home: pageHome, fleet: pageFleet, delivery: pageDelivery, policies: pagePolicies, agreement: pageAgreement, contact: pageContact, checkin: pageCheckin, paid: pagePaid, reviews: pageReviews };
   function parse() {
-    const h = decodeURIComponent(location.hash.replace(/^#\/?/, "")) || "home";
+    const raw = location.hash.replace(/^#\/?/, "");
+    // "#reviews?r=5&car=glb35&name=..." comes from the trip-complete email: prefill the review form.
+    if (/^reviews\?/.test(raw)) return ["reviews", new URLSearchParams(raw.slice(8))];
+    const h = decodeURIComponent(raw) || "home";
     let m;
     if ((m = h.match(/^car-([\w-]+)$/)) && carById(m[1])) return ["car", m[1]];
     if ((m = h.match(/^book-([\w-]+)$/)) && carById(m[1])) return ["book", m[1]];
@@ -94,7 +97,7 @@
     cleanups.splice(0).forEach((f) => { try { f(); } catch (e) { /* ignore */ } });
     const [name, arg, arg2, arg3] = parse();
     view.innerHTML = "";
-    if (name === "car") pageCar(arg); else if (name === "book") pageBook(arg); else if (name === "approve") pageApprove(arg, arg2); else if (name === "revmod") pageReviewMod(arg, arg2, arg3); else PAGES[name]();
+    if (name === "car") pageCar(arg); else if (name === "book") pageBook(arg); else if (name === "approve") pageApprove(arg, arg2); else if (name === "revmod") pageReviewMod(arg, arg2, arg3); else if (name === "reviews") pageReviews(arg); else PAGES[name]();
     trackPage(name, arg);
     window.scrollTo(0, 0);
     $$("#nav a").forEach((a) => a.toggleAttribute("aria-current", a.getAttribute("href") === "#" + name || (name === "car" || name === "book") && a.getAttribute("href") === "#fleet"));
@@ -1146,7 +1149,7 @@ ${j.deposit_url ? `          <div class="line-item"><span class="eyebrow">Deposi
     const cards = list.slice(0, 12).map(reviewCard).join("");
     strip.innerHTML = `<div class="rev-track${list.length < 3 || reduce ? " still" : ""}">${cards}${list.length >= 3 && !reduce ? `<div class="rev-dup" aria-hidden="true">${cards}</div>` : ""}</div>`;
   }
-  function pageReviews() {
+  function pageReviews(pre) {
     setTitle("Reviews");
     const opts = FLEET.map((c) => `<option value="${esc(c.id)}">${esc(c.year + " " + c.short)}</option>`).join("");
     view.innerHTML = `<section class="wrap page-top"><span class="eyebrow">Guest reviews</span><h1>Reviews</h1>
@@ -1174,6 +1177,14 @@ ${j.deposit_url ? `          <div class="line-item"><span class="eyebrow">Deposi
       box.innerHTML = list.length ? list.map(reviewCard).join("") : `<p class="mute">No published reviews yet. Yours could be the first.</p>`;
     });
     const f = $("#rv-form"), body = $("#rv-body");
+    const pf = pre instanceof URLSearchParams ? pre : null;
+    const bookingRef = pf && /^ALA-[A-Z0-9]{4,10}$/.test(pf.get("ref") || "") ? pf.get("ref") : null;
+    if (pf) {
+      const r = Number(pf.get("r")); if (r >= 1 && r <= 5) $("#rv-r" + r).checked = true;
+      if (carById(pf.get("car") || "")) $("#rv-car").value = pf.get("car");
+      if (pf.get("name")) $("#rv-name").value = pf.get("name").slice(0, 60);
+      setTimeout(() => { body.focus({ preventScroll: true }); $("#rv-form").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); }, 300);
+    }
     body.addEventListener("input", () => { $("#rv-count").textContent = body.value.length; });
     $$('input[name="rv-rating"]', f).forEach((r) => r.addEventListener("change", () => setErr(f, "rv-rating", "")));
     f.addEventListener("submit", async (e) => {
@@ -1190,7 +1201,7 @@ ${j.deposit_url ? `          <div class="line-item"><span class="eyebrow">Deposi
       if (isPreview) { notice(note, "", previewMsg); return; }
       btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Sending';
       let saved = false;
-      if (sb) { try { const { error } = await sb.from("reviews").insert({ name: v("name"), email: v("email") || null, car_id: v("car") || null, rating, body: v("body") }); saved = !error; } catch (err) { saved = false; } }
+      if (sb) { try { const { error } = await sb.from("reviews").insert({ name: v("name"), email: v("email") || null, car_id: v("car") || null, rating, body: v("body"), booking_ref: bookingRef }); saved = !error; } catch (err) { saved = false; } }
       btn.disabled = false; btn.textContent = "Submit review";
       if (saved) { f.reset(); $("#rv-count").textContent = "0"; notice(note, "ok", "Thank you! Your review was sent and will appear here once it's been checked."); }
       else notice(note, "bad", `We couldn't send that just now. Please try again, or email it to <a href="mailto:${esc(C.email)}">${esc(C.email)}</a>.`);
