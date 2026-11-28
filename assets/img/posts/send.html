@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>sending</title>
+<script>
+// Temporary helper: hands the scheduled post images to the Meta Business Suite tab that opened it. Remove after scheduling.
+(async () => {
+  const ok = ["https://business.facebook.com", "https://adsmanager.facebook.com"];
+  if (!window.opener) { document.body.textContent = "no opener"; return; }
+  const files = [];
+  for (let i = 1; i <= 10; i++) { const n = "ALA-post-" + String(i).padStart(2, "0") + ".jpg"; files.push({ name: n, buf: await (await fetch(n, { cache: "no-store" })).arrayBuffer() }); }
+  for (const o of ok) { try { window.opener.postMessage({ claudePosts: true, files }, o); } catch (e) {} }
+  document.body.textContent = "sent";
+  setTimeout(() => window.close(), 1500);
+})();
+</script>
