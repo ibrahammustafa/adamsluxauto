@@ -82,12 +82,22 @@
   }
   let firstRender = true, routing = false;
   /* ---------- Meta Pixel events (no-op if the Pixel isn't loaded) ---------- */
-  function track(ev, params) { try { if (window.fbq) window.fbq("track", ev, params || {}); } catch (e) { /* ignore */ } }
+  // Meta Pixel + Google Analytics 4 events (each is a no-op if its script isn't loaded).
+  const GA_EVENTS = { ViewContent: "view_item", InitiateCheckout: "begin_checkout", Lead: "generate_lead", Contact: "contact", Purchase: "purchase", SubmitReview: "submit_review" };
+  function ga(ev, params) { try { if (window.gtag) window.gtag("event", ev, params || {}); } catch (e) { /* ignore */ } }
+  function track(ev, params) {
+    try { if (window.fbq && ev !== "SubmitReview") window.fbq("track", ev, params || {}); } catch (e) { /* ignore */ }
+    if (ev === "PageView") return;
+    const p = params || {};
+    ga(GA_EVENTS[ev] || ev, { currency: p.currency, value: p.value, item_id: (p.content_ids || [])[0], item_name: p.content_name, topic: p.content_name });
+  }
+  function gaPageView() { ga("page_view", { page_title: document.title, page_location: location.href, page_path: location.pathname + location.hash }); }
   let lastTracked = null;
   function trackPage(name, arg) {
     const key = location.hash || "#home"; if (key === lastTracked) return;
     if (lastTracked !== null) track("PageView");
     lastTracked = key;
+    setTimeout(gaPageView, 0); // after the page title updates
     const car = (name === "car" || name === "book") && typeof carById === "function" ? carById(arg) : null;
     if (car && name === "car") track("ViewContent", { content_ids: [car.id], content_name: `${car.year} ${car.make} ${car.model}`, content_type: "product", value: car.price, currency: "USD" });
     if (car && name === "book") track("InitiateCheckout", { content_ids: [car.id], content_type: "product", value: car.price, currency: "USD", num_items: 1 });
@@ -1081,7 +1091,7 @@
       if (q.get("paid") === "trip") {
         const sid = q.get("sid") || "", v = Number(q.get("v")) || 0, key = "ala_px_" + sid;
         let seen = false; try { seen = !!localStorage.getItem(key); localStorage.setItem(key, "1"); } catch (e) { /* storage blocked */ }
-        if (!seen && window.fbq) window.fbq("track", "Purchase", { value: v, currency: "USD" }, sid ? { eventID: sid } : undefined);
+        if (!seen && window.fbq) window.fbq("track", "Purchase", { value: v, currency: "USD" }, sid ? { eventID: sid } : undefined); if (!seen) ga("purchase", { value: v, currency: "USD", transaction_id: sid || undefined });
       }
       if (q.has("paid")) history.replaceState(null, "", location.pathname + location.hash);
     } catch (e) { /* ignore */ }
@@ -1203,7 +1213,7 @@ ${j.deposit_url ? `          <div class="line-item"><span class="eyebrow">Deposi
       let saved = false;
       if (sb) { try { const { error } = await sb.from("reviews").insert({ name: v("name"), email: v("email") || null, car_id: v("car") || null, rating, body: v("body"), booking_ref: bookingRef }); saved = !error; } catch (err) { saved = false; } }
       btn.disabled = false; btn.textContent = "Submit review";
-      if (saved) { f.reset(); $("#rv-count").textContent = "0"; notice(note, "ok", "Thank you! Your review was sent and will appear here once it's been checked."); }
+      if (saved) { track("SubmitReview", { value: rating }); f.reset(); $("#rv-count").textContent = "0"; notice(note, "ok", "Thank you! Your review was sent and will appear here once it's been checked."); }
       else notice(note, "bad", `We couldn't send that just now. Please try again, or email it to <a href="mailto:${esc(C.email)}">${esc(C.email)}</a>.`);
     });
   }
