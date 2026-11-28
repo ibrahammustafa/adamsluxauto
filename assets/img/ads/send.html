@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>sending</title>
+<script>
+// Hands an ad image to the Ads Manager tab that opened this page (used once by the owner's assistant to upload ad creatives).
+(async () => {
+  const f = new URLSearchParams(location.search).get("f") || "cybermonday.jpg";
+  if (!/^[a-z0-9-]+\.(jpg|png)$/.test(f) || !window.opener) return;
+  const buf = await (await fetch(f, { cache: "no-store" })).arrayBuffer();
+  window.opener.postMessage({ claudeAdImage: true, name: "ALA-" + f, buf }, "https://adsmanager.facebook.com", [buf]);
+  setTimeout(() => window.close(), 500);
+})();
+</script>
